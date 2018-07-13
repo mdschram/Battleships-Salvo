@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @SpringBootApplication
 public class SalvoApplication {
@@ -16,15 +16,21 @@ public class SalvoApplication {
 	}
 
 		@Bean
-		public CommandLineRunner innitData(PlayerRepository playerRepository) {
+		public CommandLineRunner initData(GameRepository gameRepository) {
 		return (args) -> {
 
-			Player pol = new Player("pol@ubium.com", "pol");
-			Player michiel = new Player("michiel@ubium.com", "michiel");
+			LocalDate date = LocalDate.now();
+			System.out.println(date);
+			Game game1 = new Game(date);
+			Game game2 = new Game(date);
+			Game game3 = new Game(date);
 
-			playerRepository.save(pol);
-			playerRepository.save(michiel);
+			gameRepository.save(game1);
+			gameRepository.save(game2);
+			gameRepository.save(game3);
 
 		};
 	}
 }
+
+

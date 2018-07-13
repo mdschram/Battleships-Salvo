@@ -16,9 +16,9 @@ public class Player {
 
     public Player() { }
 
-    public Player(String first, String last) {
-        userName = first;
-        email = last;
+    public Player(String user) {
+        userName = user;
+
     }
 
     public String getUserName() {
@@ -29,15 +29,8 @@ public class Player {
         this.userName = userName;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String toString() {
-        return userName + " " + email;
+        return userName;
+
     }
 }
