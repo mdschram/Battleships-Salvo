@@ -1,9 +1,12 @@
 package com.codeoftheweb.Salvo;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toList;
 
 @Entity
 public class Player {
@@ -13,6 +16,16 @@ public class Player {
     private long id;
     private String userName;
     private String email;
+
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    Set<GamePlayer> gamePlayers;
+
+
+    public void addGamePlayer(GamePlayer gamePlayer) {
+        gamePlayer.setPlayer(this);
+        gamePlayers.add(gamePlayer);
+    }
+
 
     public Player() { }
 
@@ -27,6 +40,11 @@ public class Player {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    @JsonIgnore
+    public List<Game> getGames() {
+        return gamePlayers.stream().map(sub -> sub.getGame()).collect(toList());
     }
 
     public String toString() {
