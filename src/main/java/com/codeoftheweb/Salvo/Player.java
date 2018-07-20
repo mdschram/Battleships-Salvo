@@ -3,7 +3,9 @@ package com.codeoftheweb.Salvo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
@@ -34,6 +36,22 @@ public class Player {
 
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
+    }
+
+    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -44,11 +62,16 @@ public class Player {
 
     @JsonIgnore
     public List<Game> getGames() {
-        return gamePlayers.stream().map(sub -> sub.getGame()).collect(toList());
+        return gamePlayers
+                .stream()
+                .map(sub -> sub.getGame())
+                .collect(toList());
     }
 
     public String toString() {
         return userName;
 
     }
+
+
 }

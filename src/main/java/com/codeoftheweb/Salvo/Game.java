@@ -4,9 +4,7 @@ import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -29,6 +27,14 @@ public class Game {
         public Game() {
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public Game(Date date) {
         this.gameDate = date;
     }
@@ -41,9 +47,21 @@ public class Game {
         this.gameDate = date;
     }
 
-    public List<Player> getPlayers() {
-        return gamePlayers.stream().map(sub -> sub.getPlayer()).collect(toList());
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
     }
+
+    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
+    }
+
+    public List<Player> getPlayers() {
+        return gamePlayers
+                .stream()
+                .map(sub -> sub.getPlayer())
+                .collect(toList());
+    }
+
 
     public Date calculateDate(Integer seconds) {
         Instant dateToInstant = this.gameDate.toInstant();
@@ -53,4 +71,6 @@ public class Game {
         return this.gameDate;
 
            }
+
+
 }

@@ -4,6 +4,8 @@ import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Entity
 public class GamePlayer {
@@ -31,6 +33,14 @@ public class GamePlayer {
         this.game = game;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public Date getGameDate() {
         return gameDate;
     }
@@ -54,7 +64,9 @@ public class GamePlayer {
     public void setGame(Game game) {
         this.game = game;
     }
+
+
+
+
 }
-
-
 
