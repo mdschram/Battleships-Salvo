@@ -2,13 +2,12 @@ package com.codeoftheweb.Salvo;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.security.acl.Owner;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -22,6 +21,10 @@ public class SalvoController {
 
     @Autowired
     private PlayerRepository playerRepository;
+
+    @Autowired
+    private GamePlayerRepository gameplayerRepository;
+
 
 
     @RequestMapping("/games")
@@ -42,9 +45,34 @@ public class SalvoController {
                 .collect(toList());
     }
 
+    @RequestMapping("/game_view/{gamePlayerId}")
+    public Map<String, Object> getGamePlayerData(@PathVariable Long gamePlayerId) {
+        GamePlayer gamePlayer = gameplayerRepository.findOne(gamePlayerId);
+        Map<String, Object> gameView = new LinkedHashMap<>();
+        gameView.put("user_id", gamePlayer.getId());
+        gameView.put("game", makeGameDTO(gamePlayer.getGame()));
+//        gameView.put("ships", (gamePlayer.getShips()));
+        gameView.put("ships", makeShipDTO(gamePlayer));
+        return gameView;
+    }
+
+    public Map<String, Object> makeShipDTO(GamePlayer gamePlayer) {
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        Set<Ship> allShips = gamePlayer.getShips();
+//        dto.put("id", game.getId());
+//        dto.put("created", game.getDate());
+        dto.put("ships", allShips
+                .stream()
+                .map(thisShip -> thisShip.getShipType())
+                .collect(toList()));
+        return dto;
+    }
+
+
+
+
     public Map<String, Object> makeGameDTO(Game game) {
-        Map<String, Object> dto;
-        dto = new LinkedHashMap<String, Object>();
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
         Set<GamePlayer> gameplayerset = game.getGamePlayers();
         dto.put("id", game.getId());
         dto.put("created", game.getDate());
