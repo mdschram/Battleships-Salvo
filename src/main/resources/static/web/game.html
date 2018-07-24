@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.5/vue.js"></script>
+     <link rel="stylesheet" href="./script/style.css" type="text/css">
+    <title> Games </title>
+</head>
+<body>
+<div id="main">
+<h1>Ship Locations</h1>
+<h3>{{usernames[0]}} vs. {{usernames[1]}}</h3>
+
+
+<table class="table">
+   <tr>
+   <th></th>
+    <th v-for="column in columns"> {{column}} </th>
+    
+    </tr>
+    <tr v-for="row in rows">
+    <th> {{row}} </th>
+     <td v-for="column in columns" v-bind:id="row+column"></td>
+      </tr>
+   <div> 
+  
+    </div>  
+</table>
+
+
+
+
+
+</div>
+
+<script src="./script/game.js"></script>
+</body>
+
+</html>

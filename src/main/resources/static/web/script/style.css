@@ -1,0 +1,14 @@
+td {margin: 15px;
+    border: solid 2px black
+}
+
+th {background-color: deepskyblue;
+    border: solid 2px black;
+    width: 9%;
+    height: 9%;
+}
+
+.table {
+    font-size: 20px;
+    width: 80%
+}
