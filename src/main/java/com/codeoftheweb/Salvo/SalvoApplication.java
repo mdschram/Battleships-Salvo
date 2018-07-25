@@ -19,7 +19,8 @@ public class SalvoApplication {
 		public CommandLineRunner createGames (GameRepository gameRepository,
 											  PlayerRepository playerRepository,
 											  GamePlayerRepository gameplayerRepository,
-											  ShipRepository shipRepository){
+											  ShipRepository shipRepository,
+											  SalvoRepository salvoRepository){
 			return (args) -> {
 
 				Date date = new Date();
@@ -169,6 +170,73 @@ public class SalvoApplication {
 			shipRepository.save(ship25);
 			shipRepository.save(ship26);
 			shipRepository.save(ship27);
+
+
+				List<String> salvoLocations1 = Arrays.asList("B5", "C5", "F1");
+				List<String> salvoLocations2 = Arrays.asList("B4", "B5", "B6");
+				List<String> salvoLocations3 = Arrays.asList("F2", "D5", "");
+				List<String> salvoLocations4 = Arrays.asList("E1", "H3", "A2");
+				List<String> salvoLocations5 = Arrays.asList("A2", "A4", "G6");
+				List<String> salvoLocations6 = Arrays.asList("B5", "D5", "C7");
+				List<String> salvoLocations7 = Arrays.asList("A3", "H6", "");
+				List<String> salvoLocations8 = Arrays.asList("C5", "C6", "");
+				List<String> salvoLocations9 = Arrays.asList("G6", "H6", "A4");
+				List<String> salvoLocations10 = Arrays.asList("H1", "H2", "H3");
+				List<String> salvoLocations11 = Arrays.asList("A2", "A3", "D8");
+				List<String> salvoLocations12 = Arrays.asList("E1", "F2", "G3");
+				List<String> salvoLocations13 = Arrays.asList("A3", "A4", "F7");
+				List<String> salvoLocations14 = Arrays.asList("B5", "C6", "H1");
+				List<String> salvoLocations15 = Arrays.asList("A2", "G6", "H6");
+				List<String> salvoLocations16 = Arrays.asList("C5", "C7", "G5");
+				List<String> salvoLocations17 = Arrays.asList("A1", "A2", "A3");
+				List<String> salvoLocations18 = Arrays.asList("B5", "B6", "C7");
+				List<String> salvoLocations19 = Arrays.asList("G6", "G7", "G8");
+				List<String> salvoLocations20 = Arrays.asList("C6", "D6", "E6");
+				List<String> salvoLocations22 = Arrays.asList("H1", "H8", "");
+
+				Salvo salvo1 = new Salvo(1, salvoLocations1, gamePlayer1);
+				Salvo salvo2 = new Salvo(1, salvoLocations2, gamePlayer2);
+				Salvo salvo3 = new Salvo(2, salvoLocations3, gamePlayer1);
+				Salvo salvo4 = new Salvo(2, salvoLocations4, gamePlayer2);
+				Salvo salvo5 = new Salvo(1, salvoLocations5, gamePlayer3);
+				Salvo salvo6 = new Salvo(1, salvoLocations6, gamePlayer4);
+				Salvo salvo7 = new Salvo(2, salvoLocations7, gamePlayer3);
+				Salvo salvo8 = new Salvo(2, salvoLocations8, gamePlayer4);
+				Salvo salvo9 = new Salvo(1, salvoLocations9, gamePlayer5);
+				Salvo salvo10 = new Salvo(1, salvoLocations10, gamePlayer6);
+				Salvo salvo11 = new Salvo(2, salvoLocations11, gamePlayer5);
+				Salvo salvo12 = new Salvo(2, salvoLocations12, gamePlayer6);
+				Salvo salvo13 = new Salvo(1, salvoLocations13, gamePlayer7);
+				Salvo salvo14 = new Salvo(1, salvoLocations14, gamePlayer8);
+				Salvo salvo15 = new Salvo(2, salvoLocations15, gamePlayer7);
+				Salvo salvo16 = new Salvo(2, salvoLocations16, gamePlayer8);
+				Salvo salvo17 = new Salvo(1, salvoLocations17, gamePlayer9);
+				Salvo salvo18 = new Salvo(1, salvoLocations18, gamePlayer10);
+				Salvo salvo19 = new Salvo(2, salvoLocations19, gamePlayer9);
+				Salvo salvo20 = new Salvo(2, salvoLocations20, gamePlayer10);
+				Salvo salvo22 = new Salvo(3, salvoLocations22, gamePlayer10);
+
+				salvoRepository.save(salvo1);
+				salvoRepository.save(salvo2);
+				salvoRepository.save(salvo3);
+				salvoRepository.save(salvo4);
+				salvoRepository.save(salvo5);
+				salvoRepository.save(salvo6);
+				salvoRepository.save(salvo7);
+				salvoRepository.save(salvo8);
+				salvoRepository.save(salvo9);
+				salvoRepository.save(salvo10);
+				salvoRepository.save(salvo11);
+				salvoRepository.save(salvo12);
+				salvoRepository.save(salvo13);
+				salvoRepository.save(salvo14);
+				salvoRepository.save(salvo15);
+				salvoRepository.save(salvo16);
+				salvoRepository.save(salvo17);
+				salvoRepository.save(salvo18);
+				salvoRepository.save(salvo19);
+				salvoRepository.save(salvo20);
+				salvoRepository.save(salvo22);
 
 
 			};

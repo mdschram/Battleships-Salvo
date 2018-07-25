@@ -1,5 +1,5 @@
-td {margin: 15px;
-    border: solid 2px black
+td {border: solid 1px black;
+    background-color: white
 }
 
 th {background-color: deepskyblue;
@@ -8,7 +8,27 @@ th {background-color: deepskyblue;
     height: 9%;
 }
 
-.table {
-    font-size: 20px;
-    width: 80%
+/*tr {height: 10%}*/
+
+.table {width: 400px;
+    height: 400px;
+    margin-left: 50px;
+    margin-right: 50px;
+    background-color: aqua;
 }
+
+h1, h3 {margin-left: 50px;
+    margin-right: 50px}
+
+
+
+.right-table {display: flex;
+flex-direction: column}
+
+.left-table {display: flex;
+flex-direction: column}
+
+#main {display: flex;
+flex-direction: row;
+justify-content: space-between}
+
