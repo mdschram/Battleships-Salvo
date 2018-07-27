@@ -1,5 +1,9 @@
 td {border: solid 1px black;
-    background-color: white
+    background-color: white;
+text-align: center;
+    font-weight: bold
+    
+        
 }
 
 th {background-color: deepskyblue;
@@ -8,7 +12,6 @@ th {background-color: deepskyblue;
     height: 9%;
 }
 
-/*tr {height: 10%}*/
 
 .table {width: 400px;
     height: 400px;

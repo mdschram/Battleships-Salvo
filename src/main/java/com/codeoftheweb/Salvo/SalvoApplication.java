@@ -187,7 +187,7 @@ public class SalvoApplication {
 				List<String> salvoLocations13 = Arrays.asList("A3", "A4", "F7");
 				List<String> salvoLocations14 = Arrays.asList("B5", "C6", "H1");
 				List<String> salvoLocations15 = Arrays.asList("A2", "G6", "H6");
-				List<String> salvoLocations16 = Arrays.asList("C5", "C7", "G5");
+				List<String> salvoLocations16 = Arrays.asList("C5", "C7", "D5");
 				List<String> salvoLocations17 = Arrays.asList("A1", "A2", "A3");
 				List<String> salvoLocations18 = Arrays.asList("B5", "B6", "C7");
 				List<String> salvoLocations19 = Arrays.asList("G6", "G7", "G8");
