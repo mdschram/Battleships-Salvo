@@ -6,7 +6,6 @@ var main = new Vue({
         gameDate: {},
         shipLocations: [],
         usernames: [],
-        salvoes: []
     },
     methods: {
         getDataObject: function (gamePlayer) {
@@ -49,7 +48,7 @@ var main = new Vue({
         getSalvoes: function (salvotype, grid, color) {
             for (i = 0; i < salvotype.length; i++) {
                 for (j = 0; j < salvotype[i].location.length; j++) {
-                    var shot = salvotype[i].location[j];
+                    let shot = salvotype[i].location[j];
                     if (shot != "" && salvotype == this.gameData.usersalvoes) {
                         document.getElementById(grid + shot).style.backgroundColor = color
                         document.getElementById(grid + shot).innerHTML = salvotype[i].turn
@@ -61,12 +60,12 @@ var main = new Vue({
             }
         },
         getPlayers: function () {
-            for (i = 0; i < 2; i++) {
-                var player = this.gameData.game.gameplayers
-                if (player[i].id == this.gamePlayer.gp) {
-                    this.usernames.push(player[i].player.username + " (You)")
+            let players = this.gameData.game.gameplayers
+            for (i = 0; i < players.length; i++) {
+                if (players[i].id == this.gamePlayer.gp) {
+                    this.usernames.push(players[i].player.username + " (You)")
                 } else {
-                    this.usernames.push(player[i].player.username)
+                    this.usernames.push(players[i].player.username)
                 }
             }
         }
@@ -76,3 +75,5 @@ var main = new Vue({
         this.getDataObject(this.gamePlayer.gp)
     }
 })
+
+

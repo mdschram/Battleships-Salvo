@@ -25,7 +25,8 @@ public class SalvoController {
     @Autowired
     private GamePlayerRepository gameplayerRepository;
 
-
+    @Autowired
+    private ScoreRepository scoreRepository;
 
     @RequestMapping("/games")
     public List<Object> getGames() {
@@ -69,6 +70,15 @@ public class SalvoController {
         return gameView;
     }
 
+    @RequestMapping("/scoreboard")
+    public List<Object> getScores(){
+        return playerRepository
+                .findAll()
+                .stream()
+                .map(score -> makeScoreDTO(score))
+                .collect(toList());
+    }
+
     public Map<String, Object> makeShipDTO(Ship ship) {
         Map<String, Object> dto;
         dto = new LinkedHashMap<String, Object>();
@@ -77,6 +87,7 @@ public class SalvoController {
         return dto;
     }
 
+
     public Map<String, Object> makeSalvoDTO(Salvo salvo) {
         Map<String, Object> dto;
         dto = new LinkedHashMap<String, Object>();
@@ -84,6 +95,7 @@ public class SalvoController {
         dto.put("location", salvo.getSalvoLocations());
         return dto;
     }
+
 
     public Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
@@ -97,6 +109,7 @@ public class SalvoController {
         return dto;
     }
 
+
     public Map<String, Object> makePlayerDTO(Player player) {
             Map<String, Object> dto;
             dto = new LinkedHashMap<String, Object>();
@@ -105,13 +118,30 @@ public class SalvoController {
             return dto;
     }
 
+
     public Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
-            Map<String, Object> dto;
-            dto = new LinkedHashMap<String, Object>();
+            Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", gamePlayer.getId());
         dto.put("created", gamePlayer.getGameDate());
         dto.put("player", makePlayerDTO(gamePlayer.getPlayer()));
+        if (gamePlayer.getScore() != null) {
+            dto.put("score", gamePlayer.getScore().getScore());
+        }
+
         return dto;
     }
+
+    public Map<String, Object> makeScoreDTO(Player player){
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("player", player.getUserName());
+        dto.put("totalscore", player.getScores().stream().map(s-> s.getScore()).mapToDouble(s -> s).sum());
+        dto.put("wins", player.getScores().stream().filter(s -> s.getScore() == 1.0).count());
+        dto.put("losses", player.getScores().stream().filter(s -> s.getScore() == 0.0).count());
+        dto.put("ties", player.getScores().stream().filter(s -> s.getScore() == 0.5).count());
+
+       return dto;
+    }
+
+
 }
 

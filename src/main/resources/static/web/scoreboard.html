@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.5/vue.js"></script>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <title> ScoreBoard </title>
+</head>
+
+<body>
+    <div id="scorevue">
+
+        <table class="scoretable">
+            <thead>
+                <th>Player</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Ties</th>
+                <th>Total Score</th>
+            </thead>
+            <tbody>
+                <tr v-for="player in scoreData">
+                    <td>{{player.player}}</td>
+                    <td>{{player.wins}}</td>
+                    <td>{{player.losses}}</td>
+                    <td>{{player.ties}}</td>
+                    <td>{{player.totalscore}}</td>
+
+
+
+
+
+
+                </tr>
+
+
+            </tbody>
+
+
+
+
+
+        </table>
+
+
+
+
+
+    </div>
+    <script src="scores.js"></script>
+</body>
+
+</html>

@@ -20,7 +20,9 @@ public class SalvoApplication {
 											  PlayerRepository playerRepository,
 											  GamePlayerRepository gameplayerRepository,
 											  ShipRepository shipRepository,
-											  SalvoRepository salvoRepository){
+											  SalvoRepository salvoRepository,
+											  ScoreRepository scoreRepository
+		){
 			return (args) -> {
 
 				Date date = new Date();
@@ -238,6 +240,24 @@ public class SalvoApplication {
 				salvoRepository.save(salvo20);
 				salvoRepository.save(salvo22);
 
+
+				Score score1 = new Score(game1, player1, 1.0, date);
+				Score score2 = new Score(game1, player2, 0.0, date);
+				Score score3 = new Score(game2, player1, 0.5, date);
+				Score score4 = new Score(game2, player2, 0.5, date);
+				Score score5 = new Score(game3, player2, 1.0, date);
+				Score score6 = new Score(game3, player4, 0.0, date);
+				Score score7 = new Score(game4, player2, 0.5, date);
+				Score score8 = new Score(game4, player1, 0.5, date);
+
+				scoreRepository.save(score1);
+				scoreRepository.save(score2);
+				scoreRepository.save(score3);
+				scoreRepository.save(score4);
+				scoreRepository.save(score5);
+				scoreRepository.save(score6);
+				scoreRepository.save(score7);
+				scoreRepository.save(score8);
 
 			};
 		}

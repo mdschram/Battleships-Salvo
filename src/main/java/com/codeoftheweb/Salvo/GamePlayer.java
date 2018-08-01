@@ -2,12 +2,13 @@ package com.codeoftheweb.Salvo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.tomcat.jni.Local;
+import org.springframework.context.annotation.ScopeMetadataResolver;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Entity
 public class GamePlayer {
@@ -38,9 +39,9 @@ public class GamePlayer {
     }
 
     public GamePlayer(Player player, Game game, Date date) {
-        this.gameDate = date;
-        this.player = player;
-        this.game = game;
+            this.gameDate = date;
+            this.player = player;
+            this.game = game;
     }
 
     public long getId() {
@@ -90,5 +91,30 @@ public class GamePlayer {
     public void setSalvoes(Set<Salvo> salvoes) {
         this.salvoes = salvoes;
     }
+
+    public Score getScore () {
+        return player.getScores().stream().filter(s -> s.getGame() == game).findFirst().orElse(null);
+    }
+
+
+
+//    public Score getScore(){
+//        List<Score> scoreList = new ArrayList<>();
+//        Set<Score> scoreSet = player.getScores();
+//        for (Score score : scoreSet) {
+//            if(score.getGame() == game) {
+//                scoreList.add(score);
+//            }
+//        }
+//        Score score;
+//        if (!scoreList.isEmpty()){
+//            score = scoreList.get(0);
+//        } else {
+//            score = null;
+//        }
+//        return score;
+//    }
+
+
 }
 

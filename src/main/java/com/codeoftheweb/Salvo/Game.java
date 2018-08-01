@@ -1,5 +1,6 @@
 package com.codeoftheweb.Salvo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
@@ -19,6 +20,9 @@ public class Game {
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
+    @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
+    Set<Score> Scores;
+
     public void addGamePlayer(GamePlayer gameplayer) {
         gameplayer.setGame(this);
         gamePlayers.add(gameplayer);
@@ -36,7 +40,7 @@ public class Game {
     }
 
     public Game(Date date) {
-        this.gameDate = date;
+            this.gameDate = date;
     }
 
     public Date getDate() {
@@ -62,6 +66,13 @@ public class Game {
                 .collect(toList());
     }
 
+        public Set<Score> getScores() {
+        return Scores;
+    }
+
+    public void setScores(Set<Score> scores) {
+        Scores = scores;
+    }
 
     public Date calculateDate(Integer seconds) {
         Instant dateToInstant = this.gameDate.toInstant();

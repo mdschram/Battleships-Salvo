@@ -15,7 +15,6 @@ public class Ship {
 
     @ElementCollection
     private List<String> shipLocations;
-//    =  new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="gamePlayer_id")
