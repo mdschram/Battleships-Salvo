@@ -25,3 +25,4 @@ var scorevue = new Vue({
         this.getDataObject()
     }
 })
+

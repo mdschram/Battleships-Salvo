@@ -6,7 +6,7 @@ var main = new Vue({
         gameDate: {},
         shipLocations: [],
         usernames: [],
-    },
+      },
     methods: {
         getDataObject: function (gamePlayer) {
             var fetchConfig =
@@ -27,13 +27,11 @@ var main = new Vue({
             response.json()
                 .then(main.onConversionToJsonSuccessful)
         },
-        paramObj: function (search) {
-            var obj = {};
-            var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
-            search.replace(reg, function (match, param, val) {
-                obj[decodeURIComponent(param)] = val === undefined ? "" : decodeURIComponent(val);
-            });
-            return obj;
+        paramObj: function () {
+            var url = location.search;
+            var x = url.split('=')[1];
+            this.gamePlayer = x;
+            return this.gamePlayer
         },
         getShips: function () {
             for (i = 0; i < this.gameData.ships.length; i++) {
@@ -42,19 +40,23 @@ var main = new Vue({
                 }
             }
             for (i = 0; i < this.shipLocations.length; i++) {
-                document.getElementById("ship " + this.shipLocations[i]).style.backgroundColor = "red"
+                document.getElementById("ship " + this.shipLocations[i]).style.backgroundColor = "yellow"
             }
         },
         getSalvoes: function (salvotype, grid, color) {
             for (i = 0; i < salvotype.length; i++) {
                 for (j = 0; j < salvotype[i].location.length; j++) {
                     let shot = salvotype[i].location[j];
+                    let cell = document.getElementById(grid + shot);
                     if (shot != "" && salvotype == this.gameData.usersalvoes) {
-                        document.getElementById(grid + shot).style.backgroundColor = color
-                        document.getElementById(grid + shot).innerHTML = salvotype[i].turn
-                    } else if (shot != "" && this.shipLocations.includes(shot)) {
-                        document.getElementById(grid + shot).style.backgroundColor = color
-                        document.getElementById(grid + shot).innerHTML = salvotype[i].turn
+                        cell.style.backgroundColor = color;
+                        cell.innerHTML = salvotype[i].turn;
+                    } else if (shot != "") {
+                        cell.style.backgroundColor = color;
+                        cell.innerHTML = salvotype[i].turn;
+                    };
+                    if (this.shipLocations.includes(shot) && salvotype == this.gameData.enemysalvoes) {
+                        cell.style.backgroundColor = "red";
                     }
                 }
             }
@@ -62,7 +64,7 @@ var main = new Vue({
         getPlayers: function () {
             let players = this.gameData.game.gameplayers
             for (i = 0; i < players.length; i++) {
-                if (players[i].id == this.gamePlayer.gp) {
+                if (players[i].id == this.id) {
                     this.usernames.push(players[i].player.username + " (You)")
                 } else {
                     this.usernames.push(players[i].player.username)
@@ -71,9 +73,6 @@ var main = new Vue({
         }
     },
     created: function () {
-        this.gamePlayer = this.paramObj(location.search)
-        this.getDataObject(this.gamePlayer.gp)
+        this.getDataObject(this.paramObj());
     }
 })
-
-

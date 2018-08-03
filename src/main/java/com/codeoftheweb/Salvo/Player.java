@@ -80,11 +80,5 @@ public class Player {
 
     }
 
-//    public Score getScore(){
-//        return scores
-//                .stream()
-//                .findFirst(p -> p)
-//
-//    }
 
 }

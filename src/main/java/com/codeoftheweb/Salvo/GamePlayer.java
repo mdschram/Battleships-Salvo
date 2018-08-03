@@ -93,27 +93,11 @@ public class GamePlayer {
     }
 
     public Score getScore () {
-        return player.getScores().stream().filter(s -> s.getGame() == game).findFirst().orElse(null);
-    }
-
-
-
-//    public Score getScore(){
-//        List<Score> scoreList = new ArrayList<>();
-//        Set<Score> scoreSet = player.getScores();
-//        for (Score score : scoreSet) {
-//            if(score.getGame() == game) {
-//                scoreList.add(score);
-//            }
-//        }
-//        Score score;
-//        if (!scoreList.isEmpty()){
-//            score = scoreList.get(0);
-//        } else {
-//            score = null;
-//        }
-//        return score;
-//    }
+        return player.getScores()
+                .stream()
+                .filter(s -> s.getGame() == game)
+                .findFirst().orElse(null);
+     }
 
 
 }
