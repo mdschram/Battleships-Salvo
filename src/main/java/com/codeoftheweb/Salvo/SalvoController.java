@@ -2,6 +2,7 @@ package com.codeoftheweb.Salvo;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,6 +69,8 @@ public class SalvoController {
                 .collect(toSet());
     }
 
+
+
     public Map<String, Object> makeShipDTO(Ship ship) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("shiptype", ship.getShipType());
@@ -129,6 +132,12 @@ public class SalvoController {
         dto.put("ties", player.getScores().stream().filter(s -> s.getScore() == 0.5).count());
         return dto;
     }
+
+    public Player getCurrentUser(Authentication authentication){
+        return playerRepository.findByUserName(authentication.getName());
+    }
+
+
 
     public Object getSalvoes(GamePlayer gamePlayer) {
         return gamePlayer.getSalvoes().stream()
