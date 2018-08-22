@@ -77,7 +77,6 @@ public class Player {
         this.scores = scores;
     }
 
-    @JsonIgnore
     public List<Game> getGames() {
         return gamePlayers
                 .stream()

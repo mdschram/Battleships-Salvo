@@ -70,6 +70,11 @@ var main = new Vue({
                     this.usernames.push(players[i].player.username)
                 }
             }
+        },
+        logout: function () {
+           fetch("/api/logout")
+                .then(window.location.href = '/web/games.html')
+                .catch();
         }
     },
     created: function () {

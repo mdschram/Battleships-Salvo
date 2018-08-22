@@ -13,11 +13,12 @@ th {background-color: deepskyblue;
 }
 
 
-.table {width: 400px;
+.scoretable {width: 400px;
     height: 400px;
     margin-left: 50px;
     margin-right: 50px;
     background-color: aqua;
+    width: 60%
 }
 
 h1, h3 {margin-left: 50px;
@@ -31,9 +32,11 @@ flex-direction: column}
 .left-table {display: flex;
 flex-direction: column}
 
+/*
 #main {display: flex;
 flex-direction: row;
 justify-content: space-between}
+*/
 
 
 

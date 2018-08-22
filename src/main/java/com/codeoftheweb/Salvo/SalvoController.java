@@ -1,11 +1,10 @@
 package com.codeoftheweb.Salvo;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -29,21 +28,36 @@ public class SalvoController {
     private ScoreRepository scoreRepository;
 
     @RequestMapping("/games")
-    public List<Object> getGames() {
-        return gameRepository
-                .findAll()
-                .stream()
-                .map(game -> makeGameDTO(game))
-                .collect(toList());
+    public  Map<String, Object> getGames(Authentication authentication) {
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        if (authentication != null) {
+            dto.put("player", makePlayerDTO(getCurrentUser(authentication)));
+        } else {
+            dto.put("player","no player logged in");
+        }
+            dto.put("games", gameRepository
+                    .findAll()
+                    .stream()
+                    .map(game -> makeGameDTO(game))
+                    .collect(toList()));
+                return dto;
     }
 
-    @RequestMapping("/players")
-    public List<Object> getPlayers() {
-        return playerRepository
-                .findAll()
-                .stream()
-                .map(b -> b.getUserName())
-                .collect(toList());
+
+    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> createUser(@RequestParam String name, String pwd) {
+        if (name.isEmpty()) {
+            return new ResponseEntity(makeMap("error","No name given"), HttpStatus.FORBIDDEN);
+        } else {
+            Player player = playerRepository.findByUserName(name);
+            if (player != null) {
+                return new ResponseEntity(makeMap("error","Name in use"), HttpStatus.CONFLICT);
+            } else {
+                Player newPlayer = new Player(name, pwd);
+                playerRepository.save(newPlayer);
+                return new ResponseEntity(makeMap("succeed",newPlayer.getId()), HttpStatus.CREATED);
+            }
+        }
     }
 
     @RequestMapping("/game_view/{gamePlayerId}")
@@ -68,8 +82,6 @@ public class SalvoController {
                 .map(player -> makeScoreDTO(player))
                 .collect(toSet());
     }
-
-
 
     public Map<String, Object> makeShipDTO(Ship ship) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
@@ -143,5 +155,11 @@ public class SalvoController {
         return gamePlayer.getSalvoes().stream()
                 .map(salvo -> makeSalvoDTO(salvo))
                 .collect(toList());
+    }
+
+    private Map<String, Object> makeMap(String key, Object value) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(key, value);
+        return map;
     }
 }
