@@ -27,7 +27,7 @@ public class SalvoController {
     @Autowired
     private ScoreRepository scoreRepository;
 
-    @RequestMapping("/games")
+    @RequestMapping(path = "/games", method = RequestMethod.GET)
     public  Map<String, Object> getGames(Authentication authentication) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         if (authentication != null) {
@@ -43,6 +43,14 @@ public class SalvoController {
                 return dto;
     }
 
+    @RequestMapping(path = "/games", method = RequestMethod.POST)
+    public  void createGame(String userName) {
+        Date date = new Date();
+        Game game = gameRepository.save(new Game(date));
+        Player player = playerRepository.findByUserName(userName);
+        gameplayerRepository.save(new GamePlayer(player, game, date));
+
+    };
 
     @RequestMapping(path = "/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> createUser(@RequestParam String name, String pwd) {
@@ -60,9 +68,10 @@ public class SalvoController {
         }
     }
 
-    @RequestMapping("/game_view/{gamePlayerId}")
-    public Map<String, Object> getGamePlayerData(@PathVariable Long gamePlayerId) {
+    @RequestMapping(path = "/game_view/{gamePlayerId}", method = RequestMethod.GET)
+    public ResponseEntity<Map<String,Object>> getGamePlayerData(@PathVariable Long gamePlayerId, Authentication authentication) {
         GamePlayer user = gameplayerRepository.findOne(gamePlayerId);
+        if (user.getPlayer().getUserName() == getCurrentUser(authentication).getUserName()){
         Map<String, Object> gameView = new LinkedHashMap<>();
         gameView.put("game", makeGameDTO(user.getGame()));
         gameView.put("ships", user.getShips()
@@ -71,7 +80,7 @@ public class SalvoController {
                 .collect(toList()));
         gameView.put("usersalvoes", getUserSalvos(user));
         gameView.put("enemysalvoes", getEnemySalvos(user));
-        return gameView;
+        return new ResponseEntity(makeMap("gameview", gameView), HttpStatus.OK);}else {return new ResponseEntity(makeMap("error","Unauthorized"), HttpStatus.UNAUTHORIZED);}
     }
 
     @RequestMapping("/scoreboard")

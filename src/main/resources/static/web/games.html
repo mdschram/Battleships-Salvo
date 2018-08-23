@@ -18,8 +18,8 @@
 <h1>Salvo Games!!!</h1>
 
 <div id="main">
-<ul id="gameslist"> <li v-for="game in gamesList">
-    {{ game.date}} : {{ game.player1}}, {{game.player2}}</li>
+<ul id="gameslist"> <li v-for="game in gamesList"><a>
+    {{ game.date}} : {{ game.player1}}, {{game.player2}}</a><button v-if="game.gameLink != 0"><a :href=game.gameLink>Join</a></button></li>
 
 </ul>
 
@@ -30,6 +30,7 @@
 <button @click="logout" v-if="userLoggedIn">Log out</button>
 <button @click="login" v-else >Log in</button>
 <button @click="createPlayer" v-if="userLoggedIn == false" >Create Player</button>
+<button @click="createGame">Create game</button>
 </div>
 {{createPlayerMessage}}
 {{gameData.player}}
