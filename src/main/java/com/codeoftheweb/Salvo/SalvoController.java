@@ -5,9 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.*;
-
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -17,13 +15,10 @@ public class SalvoController {
 
     @Autowired
     private GameRepository gameRepository;
-
     @Autowired
     private PlayerRepository playerRepository;
-
     @Autowired
     private GamePlayerRepository gameplayerRepository;
-
     @Autowired
     private ScoreRepository scoreRepository;
 
@@ -44,29 +39,44 @@ public class SalvoController {
     }
 
     @RequestMapping(path = "/games", method = RequestMethod.POST)
-    public  void createGame(String userName) {
+    public  ResponseEntity<Map<String,Object>> createGame(Authentication authentication) {
+        if (authentication != null){
         Date date = new Date();
         Game game = gameRepository.save(new Game(date));
-        Player player = playerRepository.findByUserName(userName);
-        gameplayerRepository.save(new GamePlayer(player, game, date));
-
-    };
+        Player player = playerRepository.findByUserName(authentication.getName());
+        GamePlayer gamePlayer = new GamePlayer(player, game, date);
+        gameplayerRepository.save(gamePlayer);
+        return new ResponseEntity<>(makeMap("gpid", gamePlayer.getId()), HttpStatus.CREATED);} else { return new ResponseEntity<>(makeMap("gpid", "no player logged in"), HttpStatus.UNAUTHORIZED);}
+    }
 
     @RequestMapping(path = "/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> createUser(@RequestParam String name, String pwd) {
         if (name.isEmpty()) {
-            return new ResponseEntity(makeMap("error","No name given"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(makeMap("error","No name given"), HttpStatus.FORBIDDEN);
         } else {
             Player player = playerRepository.findByUserName(name);
             if (player != null) {
-                return new ResponseEntity(makeMap("error","Name in use"), HttpStatus.CONFLICT);
+                return new ResponseEntity<>(makeMap("error","Name in use"), HttpStatus.CONFLICT);
             } else {
                 Player newPlayer = new Player(name, pwd);
                 playerRepository.save(newPlayer);
-                return new ResponseEntity(makeMap("succeed",newPlayer.getId()), HttpStatus.CREATED);
+                return new ResponseEntity<>(makeMap("succeed",newPlayer.getId()), HttpStatus.CREATED);
             }
         }
     }
+
+    @RequestMapping(path = "/games/{gameId}/players", method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> joinGame(@PathVariable Long gameId, Authentication authentication) {
+        if (authentication != null) {
+            if (gameRepository.getOne(gameId) != null ){
+                if (gameRepository.getOne(gameId).getGamePlayers().size() == 1){return new ResponseEntity<>(makeMap("succeed", gameId), HttpStatus.CREATED);}
+        else {return new ResponseEntity<>(makeMap("game full", gameId), HttpStatus.UNAUTHORIZED);}
+        }
+        else return new ResponseEntity<>(makeMap("no such game", gameId), HttpStatus.FORBIDDEN);
+    }return new ResponseEntity<>(makeMap("not logged in", gameId), HttpStatus.CREATED);
+    }
+
+
 
     @RequestMapping(path = "/game_view/{gamePlayerId}", method = RequestMethod.GET)
     public ResponseEntity<Map<String,Object>> getGamePlayerData(@PathVariable Long gamePlayerId, Authentication authentication) {

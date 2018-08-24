@@ -104,7 +104,6 @@ public class SalvoApplication {
 			gameplayerRepository.save(gamePlayer15);
 			gameplayerRepository.save(gamePlayer16);
 
-
 			List<String> locations1 = Arrays.asList("H2", "H3", "H4");
 			List<String> locations2 = Arrays.asList("E1", "F1", "G1");
 			List<String> locations3 = Arrays.asList("B4", "B5");
@@ -132,7 +131,6 @@ public class SalvoApplication {
 			List<String> locations25 = Arrays.asList("C6", "C7");
 			List<String> locations26 = Arrays.asList("A2", "A3", "A4");
 			List<String> locations27 = Arrays.asList("G6", "H6");
-
 
 			Ship ship1 = new Ship("Destroyer", locations1, gamePlayer1);
 			Ship ship2 = new Ship("Submarine", locations2, gamePlayer1);
@@ -189,7 +187,6 @@ public class SalvoApplication {
 			shipRepository.save(ship25);
 			shipRepository.save(ship26);
 			shipRepository.save(ship27);
-
 
 				List<String> salvoLocations1 = Arrays.asList("B5", "C5", "F1");
 				List<String> salvoLocations2 = Arrays.asList("B4", "B5", "B6");
@@ -257,7 +254,6 @@ public class SalvoApplication {
 				salvoRepository.save(salvo20);
 				salvoRepository.save(salvo22);
 
-
 				Score score1 = new Score(game1, player1, 1.0, date);
 				Score score2 = new Score(game1, player2, 0.0, date);
 				Score score3 = new Score(game2, player1, 0.5, date);
@@ -275,7 +271,6 @@ public class SalvoApplication {
 				scoreRepository.save(score6);
 				scoreRepository.save(score7);
 				scoreRepository.save(score8);
-
 			};
 		}
 	}

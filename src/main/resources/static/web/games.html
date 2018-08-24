@@ -19,7 +19,7 @@
 
 <div id="main">
 <ul id="gameslist"> <li v-for="game in gamesList"><a>
-    {{ game.date}} : {{ game.player1}}, {{game.player2}}</a><button v-if="game.gameLink != 0"><a :href=game.gameLink>Join</a></button></li>
+    {{game.game}}{{ game.date}} : {{ game.player1}}, {{game.player2}}</a><button v-if="game.gameLink != 0" @click="joinGame(game.game)"><a :href=game.gameLink  >Join</a></button></li>
 
 </ul>
 
@@ -30,11 +30,11 @@
 <button @click="logout" v-if="userLoggedIn">Log out</button>
 <button @click="login" v-else >Log in</button>
 <button @click="createPlayer" v-if="userLoggedIn == false" >Create Player</button>
-<button @click="createGame">Create game</button>
+<button @click="createGame" v-if="userLoggedIn == true">Create game</button>
 </div>
-{{createPlayerMessage}}
-{{gameData.player}}
-  
+<h3>{{createPlayerMessage}}</h3>
+<h3>Current User: {{currentUser}}</h3>
+  <button @click="joinGame">joinGame</button>
     <h1>Scores</h1>
         <table class="scoretable">
             <thead>
