@@ -12,7 +12,7 @@ var main = new Vue({
         date: 0,
         userLoggedIn: false,
         createPlayerMessage: "",
-        currentUser: "" 
+        currentUser: ""
     },
     methods: {
         getScores: function (gamePlayer) {
@@ -37,9 +37,9 @@ var main = new Vue({
                 }).then(this.onDataFetched)
         },
         onConversionToJsonSuccessful: function (json) {
-            document.getElementById("gameslist").innerHTML = ""
             main.gameData = json;
             console.log(this.gameData)
+
             if (this.gameData.player != "no player logged in") {
                 this.userLoggedIn = true
             } else {
@@ -53,19 +53,22 @@ var main = new Vue({
                 .then(main.onConversionToJsonSuccessful)
         },
         createGameList: function () {
+            this.gamesList = []
             for (i = 0; i < this.gameData.games.length; i++) {
                 this.game = {
                     date: "",
                     game: 0,
                     player1: "",
                     player2: "",
-                    gameLink: 0
+                    gameLink: 0,
+                    numberOfPlayers: 0
                 }
                 this.date = new Date(this.gameData.games[i].created);
                 this.game.date = this.date.toLocaleString()
                 this.game.game = this.gameData.games[i].id
                 this.game.player1 = this.gameData.games[i].gameplayers[0].player.username
                 if (this.gameData.games[i].gameplayers.length > 1) {
+                    this.game.numberOfPlayers = 2;
                     this.game.player2 = this.gameData.games[i].gameplayers[1].player.username;
                     if (this.gameData.player.id == this.gameData.games[i].gameplayers[1].player.id) {
                         this.game.gameLink = "/web/game.html?gp=" + this.gameData.games[i].gameplayers[1].id
@@ -112,23 +115,25 @@ var main = new Vue({
             let password = document.getElementById("password").value
             fetch("/api/players", {
                     credentials: 'include',
-                    method: 'GET',
+                    method: 'POST',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: 'name=' + username + '&pwd=' + password,
+                    body: 'name=' + username + '&pwd=' + password
                 })
                 .then(r => {
                     if (r.status == 201) {
                         this.createPlayerMessage = "player created";
                         this.getDataObject()
+                        this.login()
                     } else if (r.status == 409) {
                         this.createPlayerMessage = "Name already in use"
                     } else if (r.status == 403) {
                         this.createPlayerMessage = "Please give a name"
                     }
-                }).then(this.login())
+                })
+
                 .catch(function (res) {
                     console.log(res)
                 })
@@ -136,32 +141,67 @@ var main = new Vue({
         createGame: function () {
             fetch("/api/games", {
                     credentials: 'include',
-                    method: 'POST'
+                    method: 'POST',
                 })
-                .then(res => {
-                    if (res.status == 201) {
-                        res => res.json();
-                        window.location.href = "/web/game.html?gp=" + res.gpid
-                    } else {
-                        alert("no player logged in")
-                    }
-                })
+                .then(response =>
+                    response.json().then(data => ({
+                        data: data,
+                        status: response.status
+                    })).then(res => {
+                        if (res.status == 201) {
+                            res => res.json();
+                            console.log(res);
+                         window.location.href = "/web/game.html?gp=" + res.data.gpid
+                        } else {
+                            alert("error")
+                        }
+                        console.log(res.status, res.data)
+                    }))
                 .catch(function (res) {
                     console.log(res)
                 })
         },
-        joinGame: function(game){
-             fetch("/api/games/" + game + "/players", {
+        joinGame: function (game) {
+            fetch("/api/games/" + game + "/players", {
                     credentials: 'include',
-                    method: 'POST'
+                    method: 'POST',
                 })
-                .then(res => res.json())
-                .then(res => console.log(res))
+                .then(response =>
+                    response.json().then(data => ({
+                        data: data,
+                        status: response.status
+                    })).then(res => {
+                        if (res.status == 201) {
+                            res => res.json();
+                            window.location.href = "/web/game.html?gp=" + res.data.gpid
+                        } else {
+                            alert("error")
+                        }
+                        console.log(res.status, res.data)
+                    }))
                 .catch(function (res) {
                     console.log(res)
                 })
-            }
-         },
+        },
+        goToGamePage: function (link) {
+            window.location.href = link
+
+        },
+        shipsPlaced: function () {
+            fetch("/api/games/players/1/ships", {
+                credentials: 'include',
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify([{
+                    shipType: "hfdgf",
+                    shipLocations: ["A1", "A6", "A8"]
+                }])
+            }).then(response => console.log(response))
+        }
+    },
     created: function () {
         this.getDataObject()
         this.getScores()

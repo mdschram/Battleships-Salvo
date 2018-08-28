@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.5/vue.js"></script>
+      <link rel="stylesheet" href="style.css" type="text/css">
+    <title> Place Ships </title>
+</head>
+
+<style>
+#div1, #div2 {
+    float: left;
+    width: 100px;
+    height: 35px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+}
+</style>
+
+<body>
+    <div id="main">
+        <table class="table">
+            <tr>
+                <th></th>
+                <th v-for="column in columns"> {{column}} </th>
+
+            </tr>
+            <tr v-for="row in rows">
+                <th> {{row}} </th>
+                <td v-for="column in columns" v-bind:id="'ship ' + row+column" ondrop="drop(event)" ondragover="allowDrop(event)" ></td>
+            </tr>
+            <div>
+
+            </div>
+        </table>
+        <table>
+        Aircraft Carrier: <tr>
+    <td><div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="download.jpg" draggable="true" ondragstart="drag(event)" id="drag1" width="100"></div></td>
+    <td>f</td>
+    <td>f</td>
+    <td>f</td>
+    <td>f</td>
+    <td>f</td>
+    </tr>
+        </table>
+      
+        <table>
+        Battleship: <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+        </table>
+        
+          <table>
+        Submarine: <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  
+    </tr>
+        </table>
+        
+          <table>
+        Destroyer: <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+   
+    </tr>
+        </table>  
+        
+        <table>
+        Patrol Boat: <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+       </tr>
+        </table>
+        
+     <table>
+        Dock: <tr>
+    <td>d<div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)" width="100"></div></td>
+    <td>d</td>
+    <td>d</td>
+    <td>d</td>
+    <td>d</td>
+    <td>d</td>
+       </tr>
+        </table> 
+        
+            
+    </div>
+    
+    
+
+    <script src="game.js"></script>
+
+</body>
+
+</html>

@@ -5,37 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.5/vue.js"></script>
-        <link rel="stylesheet" href="style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
     <title> Games </title>
 </head>
+
 <body>
 
-<h1>Salvo Games!!!</h1>
+    <h1>Salvo Games!!!</h1>
 
-<div id="main">
-<ul id="gameslist"> <li v-for="game in gamesList"><a>
-    {{game.game}}{{ game.date}} : {{ game.player1}}, {{game.player2}}</a><button v-if="game.gameLink != 0" @click="joinGame(game.game)"><a :href=game.gameLink  >Join</a></button></li>
+    <div id="main">
+        <ul id="gameslist">
+            <li v-for="game in gamesList"><a>
+    {{game.game}}{{ game.date}} : {{ game.player1}}, {{game.player2}}</a><button v-if="game.gameLink != 0" @click="goToGamePage(game.gameLink)">Open</button> <button @click="joinGame(game.game)" v-if="game.numberOfPlayers <2 && userLoggedIn && game.player1 != gameData.player.username ">Join</button></li>
 
-</ul>
+
+        </ul>
 
 
-<div id="login-form">
-<label>Name: <input id="username"type="text" name="username"></label>
-<label>Password: <input id="password" type="text" name="password"></label>
-<button @click="logout" v-if="userLoggedIn">Log out</button>
-<button @click="login" v-else >Log in</button>
-<button @click="createPlayer" v-if="userLoggedIn == false" >Create Player</button>
-<button @click="createGame" v-if="userLoggedIn == true">Create game</button>
-</div>
-<h3>{{createPlayerMessage}}</h3>
-<h3>Current User: {{currentUser}}</h3>
-  <button @click="joinGame">joinGame</button>
-    <h1>Scores</h1>
+        <div id="login-form">
+            <label>Name: <input id="username"type="text" name="username"></label>
+            <label>Password: <input id="password" type="text" name="password"></label>
+            <button @click="logout" v-if="userLoggedIn">Log out</button>
+            <button @click="login" v-else>Log in</button>
+            <button @click="createPlayer" v-if="userLoggedIn == false">Create Player</button>
+            <button @click="createGame">Create game</button>
+        </div>
+        <h3>{{createPlayerMessage}}</h3>
+        <h3>Current User: {{currentUser}}</h3>
+        <h1>Scores</h1>
         <table class="scoretable">
             <thead>
                 <th>Player</th>
@@ -51,12 +53,12 @@
                     <td>{{player.losses}}</td>
                     <td>{{player.ties}}</td>
                     <td>{{player.totalscore}}</td>
-               </tr>
-          </tbody>
-    </table>
-  
-</div>
-<script src="./script/games.js"></script>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <script src="./script/games.js"></script>
 </body>
 
 </html>
