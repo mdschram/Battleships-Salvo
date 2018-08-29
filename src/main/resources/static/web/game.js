@@ -6,6 +6,8 @@ var main = new Vue({
         gameDate: {},
         shipLocations: [],
         usernames: [],
+        locations: [],
+        Carrier: document.getElementById("Carrier")
     },
     methods: {
         getDataObject: function (gamePlayer) {
@@ -93,11 +95,34 @@ var main = new Vue({
         peekingPlayer: function () {
             document.getElementById("main").innerHTML = ""
             document.getElementById("main").innerHTML = "<h1>No Peeking!!</h1>"
-
-
+            },
+         saveShip: function(location, shipType){
+             var shipLength = 5
+             this.locations = []
+             console.log(location[1])
+            
+            for (i = location[1]; i < (parseInt(location[1]) + shipLength); i++){
+                this.locations.push(location[0]+i)
+               
+                
+                
+            }
+             this.ship = {"shipType" : shipType, "shipLocations" : this.locations}
+             console.log(this.ship)
+            
         },
-   
-    },
+                    
+        Rotate: function(shipId) {
+        var element = document.getElementById(shipId);
+
+		if (element.className === "normal") {
+			element.className = "rotate";
+		}
+		else if ( element.className === "rotate") {
+			element.className = 'normal';
+		}
+	}
+       },
     created: function () {
         this.getDataObject(this.paramObj());
     }
@@ -115,4 +140,8 @@ function drop(ev) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
     ev.target.appendChild(document.getElementById(data));
+    main.saveShip(ev.target.id, data)
+    
 }
+
+

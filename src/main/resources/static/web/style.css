@@ -1,42 +1,97 @@
-td {border: solid 1px black;
+td {
+    border: solid 1px black;
+    margin: 0
+    /*
     background-color: white;
 text-align: center;
     font-weight: bold
-    
-        
+*/
 }
 
-th {background-color: deepskyblue;
+th {
+    background-color: deepskyblue;
     border: solid 2px black;
     width: 9%;
     height: 9%;
 }
 
 
-.scoretable {width: 400px;
-    height: 400px;
-    margin-left: 50px;
-    margin-right: 50px;
-    background-color: aqua;
+
+
+.ship-place-table {
+    width: 80%;
+    height: 80%;
+    margin-left: 10px;
+    /*    background-color: aqua;*/
     width: 60%
 }
 
-h1, h3 {margin-left: 50px;
-    margin-right: 50px}
+.ship {
+    display: flex;
+    flex-direction: column
+}
+
+h1,
+h3 {
+    margin-left: 50px;
+    margin-right: 50px
+}
+
+input[type=checkbox]:checked ~ .rotate{
+     -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+    
+}
+
+img{width: 500%}
+
+img:active {
+ 
+}
 
 
+img#Patrol-boat{width: 200%}
 
-.right-table {display: flex;
-flex-direction: column}
+.rotate {
+   -ms-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+     transform: rotate(90deg);
+}
 
-.left-table {display: flex;
-flex-direction: column}
+.normal {
+   -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+     transform: rotate(0deg);
+}
 
-/*
-#main {display: flex;
-flex-direction: row;
-justify-content: space-between}
-*/
+.shipcontainer {
+    float: left;
+    width: 50px;
+    margin-right: 70px;
+    margin: 10px;
+    padding: 10px;
+/*    border: 1px solid black;*/
+}
 
+.right-table {
+    display: flex;
+    flex-direction: column
+}
 
+.left-table {
+    display: flex;
+    flex-direction: column
+}
 
+#main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 100%;
+    width: 70%
+}
+
+body,
+html {
+    height: 100%
+}
