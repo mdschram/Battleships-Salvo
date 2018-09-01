@@ -1,35 +1,51 @@
 td {
     border: solid 1px black;
-    margin: 0
-    /*
-    background-color: white;
-text-align: center;
-    font-weight: bold
-*/
+    margin: 0;
 }
 
 th {
     background-color: deepskyblue;
     border: solid 2px black;
+/*
     width: 9%;
-    height: 9%;
+    height: 6%;
+*/
 }
+th,
+tr,
+td{width: 45px;
+height: 45px}
 
 
 
 
 .ship-place-table {
-    width: 80%;
-    height: 80%;
+/*    width: 80%;*/
+/*    height: 80%;*/
     margin-left: 10px;
-    /*    background-color: aqua;*/
-    width: 60%
+/*    width: 60%*/
 }
+
+
 
 .ship {
     display: flex;
-    flex-direction: column
-}
+    flex-direction: column;
+ }
+
+#containership.normal{width: 510%; height: 35px; margin-left: 5px; margin-top: 2px}
+#cruiseship.normal{width: 410%; height: 35px;margin-left: 5px; margin-top: 2px}
+#yacht.normal{width: 300%; height: 35px; margin-left: 5px; margin-top: 2px}
+#fishingboat.normal{width: 300%; height: 35px; margin-left: 5px; margin-top: 2px}
+#speedboat.normal{width: 200%; height: 35px; margin-left: 5px; margin-top: 2px}
+
+#speedboat.rotate{width: 200%; height: 35px; margin-left: 15px; margin-top: 0px}
+#containership.rotate{width: 510%; height: 35px; margin-left: 5px; margin-top: 2px}
+#cruiseship.rotate{width: 410%; height: 35px;margin-left: 5px; margin-top: 2px}
+#yacht.rotate{width: 300%; height: 35px; margin-left: 5px; margin-top: 2px}
+#fishingboat.rotate{width: 300%; height: 35px; margin-left: 10px; margin-bottom: 2px}
+
+
 
 h1,
 h3 {
@@ -37,25 +53,26 @@ h3 {
     margin-right: 50px
 }
 
+/*
 input[type=checkbox]:checked ~ .rotate{
      -webkit-transform: rotate(90deg);
-          transform: rotate(90deg);
+       transform: rotate(90deg);
     
 }
+*/
 
-img{width: 500%}
-
-img:active {
- 
+/*
+img{width: 500%;
 }
+*/
 
 
-img#Patrol-boat{width: 200%}
 
 .rotate {
    -ms-transform: rotate(90deg);
     -webkit-transform: rotate(90deg);
      transform: rotate(90deg);
+    transform-origin: 10% 50%
 }
 
 .normal {
@@ -70,7 +87,7 @@ img#Patrol-boat{width: 200%}
     margin-right: 70px;
     margin: 10px;
     padding: 10px;
-/*    border: 1px solid black;*/
+
 }
 
 .right-table {

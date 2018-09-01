@@ -3,11 +3,40 @@ var main = new Vue({
     data: {
         rows: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
         columns: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        gameDate: {},
+        gameData: {},
         shipLocations: [],
         usernames: [],
         locations: [],
-        Carrier: document.getElementById("Carrier")
+        allowed: true,
+        illegalShip: false,
+        allShips: {
+            containership: {
+                shipLength: 5,
+                orientation: "horizontal",
+                locations: []
+            },
+            cruiseship: {
+                shipLength: 4,
+                orientation: "horizontal",
+                locations: []
+            },
+            yacht: {
+                shipLength: 3,
+                orientation: "horizontal",
+                locations: []
+            },
+            fishingboat: {
+                shipLength: 3,
+                orientation: "horizontal",
+                locations: [],
+            },
+            speedboat: {
+                shipLength: 2,
+                orientation: "horizontal",
+                locations: []
+            }
+        },
+
     },
     methods: {
         getDataObject: function (gamePlayer) {
@@ -95,37 +124,84 @@ var main = new Vue({
         peekingPlayer: function () {
             document.getElementById("main").innerHTML = ""
             document.getElementById("main").innerHTML = "<h1>No Peeking!!</h1>"
-            },
-         saveShip: function(location, shipType){
-             var shipLength = 5
-             this.locations = []
-             console.log(location[1])
-            
-            for (i = location[1]; i < (parseInt(location[1]) + shipLength); i++){
-                this.locations.push(location[0]+i)
-               
-                
-                
+        },
+        determineLocation: function (location, ship) {
+            this.allowed = true
+            let shipName = eval("this.allShips." + ship)
+            let shipLength = shipName.shipLength
+            shipName.locations = []
+            if (shipName.orientation == "horizontal") {
+                for (i = location[1]; i < (parseInt(location[1]) + shipLength); i++) {
+                    if (this.checkLocation(location[0] + i) == true) {
+                        this.allowed = false;
+                        console.log(this.checkLocation(location[0] + i))
+                        break
+                    } else {
+
+                        shipName.locations.push(location[0] + i)
+                    }
+                    console.log(location[0] + i)
+                }
             }
-             this.ship = {"shipType" : shipType, "shipLocations" : this.locations}
-             console.log(this.ship)
+            if (shipName.orientation == "vertical") {
+                let rowNumber = 0
+                for (i = 0; i < this.rows.length; i++) {
+                    if (location[0] == this.rows[i]) {
+                        rowNumber = i-1
+                    }
+                }
+                for (i = 0; i < shipLength; i++) {
+                    if (this.checkLocation(this.rows[rowNumber] + location[1]) == true) {
+                        this.allowed = false;
+                        console.log(this.checkLocation(this.rows[rowNumber] + location[1]))
+                        break
+                    } else {
+
+                        shipName.locations.push(this.rows[rowNumber] + location[1]);
+                        rowNumber++
+                        
+                    }
+                    console.log(this.rows[rowNumber] + location[1])
+                }
+            }
             
         },
-                    
-        Rotate: function(shipId) {
-        var element = document.getElementById(shipId);
+        checkLocation: function (loc) {
+            for (ship in this.allShips) {
+//                console.log(ship)
+                checkShip = eval("this.allShips." + ship + ".locations")
+                
+                if (checkShip.includes(loc)) {
+                    this.allowed = false;
+                console.log(checkShip)}
+ 
+            }
+        },
+        Rotate: function (shipId) {
+            var element = document.getElementById(shipId);
+            var ship = eval("this.allShips." + shipId)
+            var parent = document.getElementById(shipId).parentNode.id
+            if (element.className === "normal") {
+                ship.orientation = "vertical";
+                this.determineLocation(parent, shipId)
+                if (this.allowed == true) {
+                    element.className = "rotate"
+                }
+            } else if (element.className === "rotate") {
+                ship.orientation = "horizontal"
+                this.determineLocation(parent, shipId)
+                if (this.allowed == true)
+                    element.className = 'normal'
+            };
 
-		if (element.className === "normal") {
-			element.className = "rotate";
-		}
-		else if ( element.className === "rotate") {
-			element.className = 'normal';
-		}
-	}
-       },
-    created: function () {
-        this.getDataObject(this.paramObj());
-    }
+
+
+        }
+    },
+    //
+    //    created: function () {
+    //        this.getDataObject(this.paramObj());
+    //    }
 })
 
 function allowDrop(ev) {
@@ -136,12 +212,17 @@ function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
 }
 
-function drop(ev) {
+function drop(ev, el) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
-    ev.target.appendChild(document.getElementById(data));
-    main.saveShip(ev.target.id, data)
-    
+    main.determineLocation(ev.target.id, data);
+    if (el.firstChild || main.allowed == false) {
+
+
+    } else {
+
+        el.appendChild(document.getElementById(data));
+
+    }
+
 }
-
-

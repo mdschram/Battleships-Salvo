@@ -5,14 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.5/vue.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="style.css" type="text/css">
     <title> Place Ships </title>
 </head>
 
 <style>
-    
+
+
 </style>
 
 <body>
@@ -25,7 +28,7 @@
             </tr>
             <tr v-for="row in rows">
                 <th> {{row}} </th>
-                <td v-for="column in columns" v-bind:id="row+column" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+                <td v-for="column in columns" v-bind:id="row+column" ondrop="drop(event, this)" ondragover="allowDrop(event)"></td>
             </tr>
             <div>
 
@@ -33,36 +36,34 @@
         </table>
         <div id="ships">
             <div class="ship">
-                Aircraft Carrier:
+                Containership:
                 <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div><img src="aircraftcarrier.png" draggable="true" ondragstart="drag(event)" id="Carrier" @click="Rotate('Carrier')" class="normal"></div>
+                    <img src="containership.png" draggable="true" ondragstart="drag(event)" id="containership" @click="Rotate('containership')" class="normal">
+                </div>
             </div>
             <div class="ship">
-                Battleship:
-                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="battleship.png" draggable="true" ondragstart="drag(event)" id="Battleship" @click="Rotate('Battleship')" class="normal" ></div>
+                Cruiseship:
+                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <img src="cruiseship.png" draggable="true" ondragstart="drag(event)" id="cruiseship" @click="Rotate('cruiseship')" class="normal">
+                </div>
             </div>
             <div class="ship">
-                Submarine:
-                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="submarine.png" draggable="true" ondragstart="drag(event)" id="Submarine" @click="Rotate('Submarine')" class="normal" ></div>
+                Yacht:
+                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="yacht.png" draggable="true" ondragstart="drag(event)" id="yacht" @click="Rotate('yacht')" class="normal"></div>
             </div>
             <div class="ship">
-                Destroyer:
-                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="destroyer.png" draggable="true" ondragstart="drag(event)" id="Destroyer" @click="Rotate('Destroyer')" class="normal" ></div>
+                Fishingboat:
+                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="fishingboat.png" draggable="true" ondragstart="drag(event)" id="fishingboat" @click="Rotate('fishingboat')" class="normal"></div>
             </div>
             <div class="ship">
-                Patrol Boat:
-                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="patrolboat.png" draggable="true" ondragstart="drag(event)" id="Patrol-boat" @click="Rotate('Patrol-boat')" class="normal"></div>
+                Speedboat:
+                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="speedboat.png" draggable="true" ondragstart="drag(event)" id="speedboat" @click="Rotate('speedboat')" class="normal"></div>
             </div>
-
-
         </div>
-
     </div>
-
-
 
     <script src="game.js"></script>
-    </div>
+
 </body>
 
 </html>
