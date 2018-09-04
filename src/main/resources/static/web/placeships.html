@@ -28,7 +28,7 @@
             </tr>
             <tr v-for="row in rows">
                 <th> {{row}} </th>
-                <td v-for="column in columns" v-bind:id="row+column" ondrop="drop(event, this)" ondragover="allowDrop(event)"></td>
+                <td v-for="column in columns" v-bind:id="row+column" ondrop="drop(event, this)" ondragover="allowDrop(event)" class="droptarget"></td>
             </tr>
             <div>
 
@@ -37,29 +37,31 @@
         <div id="ships">
             <div class="ship">
                 Containership:
-                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="shipcontainer" id="containercontainer" ondrop="drop(event,this )" ondragover="allowDrop(event)" >
                     <img src="containership.png" draggable="true" ondragstart="drag(event)" id="containership" @click="Rotate('containership')" class="normal">
                 </div>
             </div>
             <div class="ship">
                 Cruiseship:
-                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)">
                     <img src="cruiseship.png" draggable="true" ondragstart="drag(event)" id="cruiseship" @click="Rotate('cruiseship')" class="normal">
                 </div>
             </div>
             <div class="ship">
                 Yacht:
-                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="yacht.png" draggable="true" ondragstart="drag(event)" id="yacht" @click="Rotate('yacht')" class="normal"></div>
+                <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)" ><img src="yacht.png" draggable="true" ondragstart="drag(event)" id="yacht" @click="Rotate('yacht')" class="normal"></div>
             </div>
             <div class="ship">
                 Fishingboat:
-                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="fishingboat.png" draggable="true" ondragstart="drag(event)" id="fishingboat" @click="Rotate('fishingboat')" class="normal"></div>
+                <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="fishingboat.png" draggable="true" ondragstart="drag(event)" id="fishingboat" @click="Rotate('fishingboat')" class="normal"></div>
             </div>
             <div class="ship">
                 Speedboat:
-                <div class="shipcontainer" ondrop="drop(event)" ondragover="allowDrop(event)"><img src="speedboat.png" draggable="true" ondragstart="drag(event)" id="speedboat" @click="Rotate('speedboat')" class="normal"></div>
+                <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="speedboat.png" draggable="true" ondragstart="drag(event)" id="speedboat" @click="Rotate('speedboat')" class="normal"></div>
             </div>
         </div>
+        <button @click="makeShipJSON">Done!</button>
+        <button @click="getGame">get Game</button>
     </div>
 
     <script src="game.js"></script>

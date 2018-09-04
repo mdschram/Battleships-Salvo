@@ -160,16 +160,16 @@ public class SalvoApplication {
 			Ship ship26 = new Ship("Submarine", locations26, gamePlayer16);
 			Ship ship27 = new Ship("Patrol Boat ", locations27, gamePlayer16);
 
-			shipRepository.save(ship1);
-			shipRepository.save(ship2);
-			shipRepository.save(ship3);
-			shipRepository.save(ship4);
-			shipRepository.save(ship5);
-			shipRepository.save(ship6);
-			shipRepository.save(ship7);
-			shipRepository.save(ship8);
-			shipRepository.save(ship9);
-			shipRepository.save(ship10);
+//			shipRepository.save(ship1);
+//			shipRepository.save(ship2);
+//			shipRepository.save(ship3);
+//			shipRepository.save(ship4);
+//			shipRepository.save(ship5);
+//			shipRepository.save(ship6);
+//			shipRepository.save(ship7);
+//			shipRepository.save(ship8);
+//			shipRepository.save(ship9);
+//			shipRepository.save(ship10);
 			shipRepository.save(ship11);
 			shipRepository.save(ship12);
 			shipRepository.save(ship13);

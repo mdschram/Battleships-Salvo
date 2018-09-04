@@ -1,4 +1,4 @@
 package com.codeoftheweb.Salvo;
 
-public class User {
+public class Message {
 }

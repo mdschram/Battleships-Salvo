@@ -4,11 +4,12 @@ var main = new Vue({
         rows: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
         columns: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
         gameData: {},
+        placing: true,
         shipLocations: [],
         usernames: [],
+        salvo: [],
         locations: [],
         allowed: true,
-        illegalShip: false,
         allShips: {
             containership: {
                 shipLength: 5,
@@ -56,7 +57,7 @@ var main = new Vue({
         },
         onConversionToJsonSuccessful: function (json) {
             main.gameData = json;
-            console.log(this.gameData.gameview)
+            console.log(this.gameData)
             if (this.gameData.gameview.ships != null) {
                 this.getShips()
             }
@@ -86,6 +87,7 @@ var main = new Vue({
             }
             for (i = 0; i < this.shipLocations.length; i++) {
                 document.getElementById("ship " + this.shipLocations[i]).style.backgroundColor = "yellow"
+                document.getElementById("ship " + this.shipLocations[i]).style.backgroundImage = "none"
             }
         },
         getSalvoes: function (salvotype, grid, color) {
@@ -95,13 +97,16 @@ var main = new Vue({
                     let cell = document.getElementById(grid + shot);
                     if (shot != "" && salvotype == this.gameData.gameview.usersalvoes) {
                         cell.style.backgroundColor = color;
+                        cell.style.backgroundImage = "none";
                         cell.innerHTML = salvotype[i].turn;
                     } else if (shot != "") {
                         cell.style.backgroundColor = color;
+                        cell.style.backgroundImage = "none";
                         cell.innerHTML = salvotype[i].turn;
                     };
                     if (this.shipLocations.includes(shot) && salvotype == this.gameData.gameview.enemysalvoes) {
                         cell.style.backgroundColor = "red";
+                        cell.style.backgroundImage = "none";
                     }
                 }
             }
@@ -129,100 +134,184 @@ var main = new Vue({
             this.allowed = true
             let shipName = eval("this.allShips." + ship)
             let shipLength = shipName.shipLength
-            shipName.locations = []
-            if (shipName.orientation == "horizontal") {
-                for (i = location[1]; i < (parseInt(location[1]) + shipLength); i++) {
-                    if (this.checkLocation(location[0] + i) == true) {
-                        this.allowed = false;
-                        console.log(this.checkLocation(location[0] + i))
-                        break
-                    } else {
+            let locations = []
+            if (shipName.orientation === "horizontal") {
+                for (i = location.slice(1); i < (parseInt(location.slice(1)) + shipLength); i++) {
+                    if (i < 11) {
 
-                        shipName.locations.push(location[0] + i)
+                        this.checkLocation((location[0] + i), ship)
+                    } else {
+                        console.log("false");
+                        this.allowed = false
                     }
-                    console.log(location[0] + i)
+                    if (this.allowed == true) {
+                        locations.push(location[0] + i)
+                    }
                 }
             }
-            if (shipName.orientation == "vertical") {
+            if (shipName.orientation === "vertical") {
                 let rowNumber = 0
                 for (i = 0; i < this.rows.length; i++) {
                     if (location[0] == this.rows[i]) {
-                        rowNumber = i-1
+                        rowNumber = i
                     }
+
                 }
                 for (i = 0; i < shipLength; i++) {
-                    if (this.checkLocation(this.rows[rowNumber] + location[1]) == true) {
-                        this.allowed = false;
-                        console.log(this.checkLocation(this.rows[rowNumber] + location[1]))
-                        break
+                    if (rowNumber < 10) {
+                        this.checkLocation((this.rows[rowNumber] + location.slice(1)), ship)
                     } else {
-
-                        shipName.locations.push(this.rows[rowNumber] + location[1]);
-                        rowNumber++
-                        
+                        console.log("false");
+                        this.allowed = false
                     }
-                    console.log(this.rows[rowNumber] + location[1])
+                    if (this.allowed == true) {
+                        locations.push(this.rows[rowNumber] + location.slice(1));
+                        rowNumber++
+                    }
                 }
             }
-            
+            if (this.allowed == true) {
+                shipName.locations = locations
+            }
         },
-        checkLocation: function (loc) {
-            for (ship in this.allShips) {
-//                console.log(ship)
-                checkShip = eval("this.allShips." + ship + ".locations")
-                
-                if (checkShip.includes(loc)) {
-                    this.allowed = false;
-                console.log(checkShip)}
- 
+        checkLocation: function (loc, ship) {
+            this.allowed = true
+            for (vessel in this.allShips) {
+                checkShip = eval("this.allShips." + vessel + ".locations")
+                if (vessel !== ship) {
+                    if (checkShip.includes(loc)) {
+                        this.allowed = false;
+                    }
+                }
             }
         },
         Rotate: function (shipId) {
             var element = document.getElementById(shipId);
             var ship = eval("this.allShips." + shipId)
             var parent = document.getElementById(shipId).parentNode.id
-            if (element.className === "normal") {
-                ship.orientation = "vertical";
-                this.determineLocation(parent, shipId)
-                if (this.allowed == true) {
-                    element.className = "rotate"
+            var container = document.getElementById(shipId).parentNode.className
+            if (container != "shipcontainer") {
+                if (element.className === "normal") {
+                    ship.orientation = "vertical";
+                    this.determineLocation(parent, shipId)
+                    if (this.allowed == true) {
+                        element.className = "rotate"
+                    } else {
+                        ship.orientation = "horizontal"
+                    }
+                } else if (element.className === "rotate") {
+                    ship.orientation = "horizontal"
+                    this.determineLocation(parent, shipId)
+                    if (this.allowed == true) {
+                        element.className = "normal"
+                    } else {
+                        ship.orientation = "vertical"
+                    }
                 }
-            } else if (element.className === "rotate") {
-                ship.orientation = "horizontal"
-                this.determineLocation(parent, shipId)
-                if (this.allowed == true)
-                    element.className = 'normal'
-            };
+            }
+        },
+        makeShipJSON: function () {
+            shipList = []
+            for (vessel in this.allShips) {
 
+                locations = eval("this.allShips." + vessel + ".locations")
+                if (locations.length > 0) {
+                    ship = {}
+                    ship.shipType = vessel
+                    ship.shipLocations = locations
+                    shipList.push(ship)
+                } else {
+                    alert("not all ships have been placed!!");
+                    break
+                }
+            }
+            if (shipList.length == 5) {
+                this.sendShips(shipList, this.paramObj())
+            }
 
+            console.log(shipList)
 
+        },
+        sendShips: function (ships, gamePlayer) {
+            fetch("/api/games/players/" + gamePlayer + "/ships", {
+                    credentials: 'include',
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(ships)
+                }).then(response => console.log(response))
+                .then(this.placing = false)
+                .then(setTimeout(3000, this.getDataObject(this.paramObj())))
+        },
+        sendSalvo: function (gamePlayer) {
+            if (this.salvo.length == 3) {
+                salvo = {
+                    turn: 2,
+                    salvoLocations: this.salvo
+                }
+                console.log(salvo)
+                fetch("/api/games/players/" + gamePlayer + "/salvos", {
+                        credentials: 'include',
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(salvo)
+                    }).then(response => console.log(response))
+                    .then(this.salvo = [])
+            } else {
+                alert("please fire 3 shots")
+            }
+
+        },
+        placeShot: function (shotCell) {
+            if (!this.salvo.includes(shotCell)) {
+                if (this.salvo.length < 3) {
+                    console.log(this.salvo.includes(shotCell))
+                    document.getElementById("salvo " + shotCell).style.backgroundColor = "red"
+                    document.getElementById("salvo " + shotCell).style.backgroundImage = "none"
+                    this.salvo.push(shotCell);
+
+                } else {
+                    console.log(this.salvo);
+                    alert("3 shots fired!")
+                }
+            } else {
+                this.salvo = this.salvo.filter(e => e !== shotCell);
+                document.getElementById("salvo " + shotCell).style.backgroundColor = ""
+
+            }
         }
+
+
     },
-    //
-    //    created: function () {
-    //        this.getDataObject(this.paramObj());
-    //    }
 })
 
 function allowDrop(ev) {
     ev.preventDefault();
+
 }
 
-function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
+ function drag (event) {
+                var img = document.createElement("img");
+                    img.src= "speedboat.png" 
+                        event.dataTransfer.setDragImage (img, 50, 50);
+             event.dataTransfer.setData("text", event.target.id);
+  
 }
 
-function drop(ev, el) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    main.determineLocation(ev.target.id, data);
+function drop(event, el) {
+    event.preventDefault();
+    var data = event.dataTransfer.getData("text");
+    console.log(data)
+    main.determineLocation(event.target.id, data);
     if (el.firstChild || main.allowed == false) {
-
-
+        console.log("magnie")
     } else {
-
         el.appendChild(document.getElementById(data));
-
+        event.target.style.backgroundColor = ""
     }
-
 }

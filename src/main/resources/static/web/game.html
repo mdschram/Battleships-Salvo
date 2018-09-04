@@ -5,62 +5,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.5/vue.js"></script>
-     <link rel="stylesheet" href="style.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
     <title> Games </title>
 </head>
+
 <body>
-<div id="main">
-<div class="left-table">
-<h1>Ship Locations</h1>
-<h3>{{usernames[0]}} vs. {{usernames[1]}}</h3>
+    <div id="main">
+       <div id="ships" v-if="placing">
+                <div class="ship">
+                    Containership:
+                    <div class="shipcontainer" id="containercontainer" ondrop="drop(event,this )" ondragover="allowDrop(event)">
+                        <img src="containership.png" draggable="true" ondragstart="drag(event)" id="containership" @click="Rotate('containership')" class="normal">
+                    </div>
+                </div>
+                <div class="ship">
+                    Cruiseship:
+                    <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)">
+                        <img src="cruiseship.png" draggable="true" ondragstart="drag(event)" id="cruiseship" @click="Rotate('cruiseship')" class="normal">
+                    </div>
+                </div>
+                <div class="ship">
+                    Yacht:
+                    <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="yacht.png" draggable="true" ondragstart="drag(event)" id="yacht" @click="Rotate('yacht')" class="normal"></div>
+                </div>
+                <div class="ship">
+                    Fishingboat:
+                    <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="fishingboat.png" draggable="true" ondragstart="drag(event)" id="fishingboat" @click="Rotate('fishingboat')" class="normal"></div>
+                </div>
+                <div class="ship">
+                    Speedboat:
+                    <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="speedboat.png" draggable="true" ondragstart="drag(event)" id="speedboat" @click="Rotate('speedboat')" class="normal"></div>
+                </div>
+            </div>
+        <div id="shipPlacing" v-if="placing">
+            <table class="ship-place-table">
+                <tr>
+                    <th></th>
+                    <th v-for="column in columns"> {{column}} </th>
+
+                </tr>
+                <tr v-for="row in rows">
+                    <th> {{row}} </th>
+                    <td v-for="column in columns" v-bind:id="row+column" ondrop="drop(event, this)" ondragover="allowDrop(event)" class="droptarget"></td>
+                </tr>
+                <div>
+
+                </div>
+            </table>
+            
+            <button @click="makeShipJSON">Done!</button>
+            
+        </div>
+        
+        
+        <div class="gamePlay" v-else>
+            <div class="left-table">
+                <h1>Ship Locations</h1>
+                <h3>{{usernames[0]}} vs. {{usernames[1]}}</h3>
 
 
-<table class="table">
-   <tr>
-   <th></th>
-    <th v-for="column in columns"> {{column}} </th>
-    
-    </tr>
-    <tr v-for="row in rows">
-    <th> {{row}} </th>
-     <td v-for="column in columns" v-bind:id= "'ship ' + row+column"></td>
-      </tr>
-   <div> 
-  
-    </div>  
-</table>
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        <th v-for="column in columns"> {{column}} </th>
+
+                    </tr>
+                    <tr v-for="row in rows">
+                        <th> {{row}} </th>
+                        <td v-for="column in columns" v-bind:id="'ship ' + row+column" class="shipTable"></td>
+                    </tr>
+                    <div>
+
+                    </div>
+                </table>
+            </div>
+
+            <div class="right-table">
+                <h1>Salvo's</h1>
+                <h3>{{usernames[0]}} vs. {{usernames[1]}}</h3>
+
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        <th v-for="column in columns"> {{column}} </th>
+
+                    </tr>
+                    <tr v-for="row in rows">
+                        <th> {{row}} </th>
+                        <td v-for="column in columns" v-bind:id="'salvo ' + row+column" class="salvoTable" @click="placeShot(row+column)"></td>
+                    </tr>
+                    <div>
+
+                    </div>
+                </table>
+            </div>
+
+            <button @click="logout">Log out</button>
+            <button @click="sendSalvo(1)">Fire salvo!</button>
+
+        </div>
     </div>
 
-<div class="right-table">
-<h1>Salvo's</h1>
-<h3>{{usernames[0]}} vs. {{usernames[1]}}</h3>
-
-<table class="table">
-   <tr>
-   <th></th>
-    <th v-for="column in columns"> {{column}} </th>
-    
-    </tr>
-    <tr v-for="row in rows">
-    <th> {{row}} </th>
-     <td v-for="column in columns" v-bind:id="'salvo ' + row+column"></td>
-      </tr>
-   <div> 
-  
-    </div>  
-</table>
-</div>
-
-<button @click="logout">Log out</button>
-
-</div>
-
-<script src="game.js"></script>
+    <script src="game.js"></script>
 </body>
 
 </html>
