@@ -16,13 +16,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.lang.reflect.Array;
 import java.util.*;
 
 @SpringBootApplication
@@ -38,7 +35,8 @@ public class SalvoApplication {
 											  GamePlayerRepository gameplayerRepository,
 											  ShipRepository shipRepository,
 											  SalvoRepository salvoRepository,
-											  ScoreRepository scoreRepository
+											  ScoreRepository scoreRepository,
+											  MessageRepository messageRepository
 		){
 			return (args) -> {
 
@@ -271,6 +269,10 @@ public class SalvoApplication {
 				scoreRepository.save(score6);
 				scoreRepository.save(score7);
 				scoreRepository.save(score8);
+
+
+				Message message1 = new Message("dit is een test", gamePlayer1);
+				messageRepository.save(message1);
 			};
 		}
 	}
@@ -330,9 +332,10 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		if (session != null) {
 			session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 
+		}
+
 	}
 
-}
 }
 
 

@@ -25,6 +25,10 @@ public class GamePlayer {
     @JoinColumn(name="game_id")
     private Game game;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="message_id")
+    private Message message;
+
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
     Set<Ship> ships;
 

@@ -187,20 +187,20 @@ var main = new Vue({
             window.location.href = link
 
         },
-        shipsPlaced: function () {
-            fetch("/api/games/players/1/ships", {
-                credentials: 'include',
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify([{
-                    shipType: "hfdgf",
-                    shipLocations: ["A1", "A6", "A8"]
-                }])
-            }).then(response => console.log(response))
-        }
+//        shipsPlaced: function () {
+//            fetch("/api/games/players/1/ships", {
+//                credentials: 'include',
+//                method: 'POST',
+//                headers: {
+//                    'Accept': 'application/json',
+//                    'Content-Type': 'application/json'
+//                },
+//                body: JSON.stringify([{
+//                    shipType: "hfdgf",
+//                    shipLocations: ["A1", "A6", "A8"]
+//                }])
+//            }).then(response => console.log(response))
+//        }
     },
     created: function () {
         this.getDataObject()

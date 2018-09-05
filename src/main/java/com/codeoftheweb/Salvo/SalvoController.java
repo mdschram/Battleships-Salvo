@@ -174,18 +174,11 @@ public class SalvoController {
             if (gamePlayer != null && salvo.getSalvoLocations().size() == 3) {
                 salvo.setGamePlayer(gamePlayer);
                 salvoRepository.save(salvo);
-
             return new ResponseEntity("created", HttpStatus.CREATED);}
          else {   return new ResponseEntity(makeMap("error", "Forbidden"), HttpStatus.FORBIDDEN);
-
     }} else{
-
     return new ResponseEntity(makeMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
-    }};
-
-
-
-
+    }}
 
     @RequestMapping("/scoreboard")
     public Set<Object> getScores() {
