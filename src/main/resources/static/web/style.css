@@ -1,7 +1,7 @@
 td {
     border: solid 1px black;
     margin: 0;
-    background-image: url("blue-swimming-pool-rippled-water-detail_1258-710.jpg")
+/*    background-image: url("blue-swimming-pool-rippled-water-detail_1258-710.jpg")*/
 }
 
 th {
@@ -9,8 +9,6 @@ th {
     border: solid 2px black;
     border-radius: 10px
 }
-
-
 
 td.salvoTable {
     width: 30px;
@@ -29,14 +27,6 @@ td.droptarget {
     height: 45px
 }
 
-
-td.ship-place-table {
-    background-image: url("blue-swimming-pool-rippled-water-detail_1258-710.jpg")
-}
-
-.ship-place-table {
-    margin-left: 10px;
-}
 
 td.salvoTable:hover {
     background-image: none;

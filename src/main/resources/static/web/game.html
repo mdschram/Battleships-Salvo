@@ -21,63 +21,37 @@
                 <div class="ship">
                     Containership:
                     <div class="shipcontainer" id="containercontainer" ondrop="drop(event,this )" ondragover="allowDrop(event)">
-                        <img src="containership.png" draggable="true" ondragstart="drag(event)" id="containership" @click="Rotate('containership')" class="normal">
+                        <img src="containership.png" draggable="true" ondragstart="drag(event)" id="containership" @click="rotateShip('containership')" class="normal">
                     </div>
                 </div>
                 <div class="ship">
                     Cruiseship:
                     <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)">
-                        <img src="cruiseship.png" draggable="true" ondragstart="drag(event)" id="cruiseship" @click="Rotate('cruiseship')" class="normal">
+                        <img src="cruiseship.png" draggable="true" ondragstart="drag(event)" id="cruiseship" @click="rotateShip('cruiseship')" class="normal">
                     </div>
                 </div>
                 <div class="ship">
                     Yacht:
-                    <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="yacht.png" draggable="true" ondragstart="drag(event)" id="yacht" @click="Rotate('yacht')" class="normal"></div>
+                    <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="yacht.png" draggable="true" ondragstart="drag(event)" id="yacht" @click="rotateShip('yacht')" class="normal"></div>
                 </div>
                 <div class="ship">
                     Fishingboat:
-                    <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="fishingboat.png" draggable="true" ondragstart="drag(event)" id="fishingboat" @click="Rotate('fishingboat')" class="normal"></div>
+                    <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="fishingboat.png" draggable="true" ondragstart="drag(event)" id="fishingboat" @click="rotateShip('fishingboat')" class="normal"></div>
                 </div>
                 <div class="ship">
                     Speedboat:
-                    <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="speedboat.png" draggable="true" ondragstart="drag(event)" id="speedboat" @click="Rotate('speedboat')" class="normal"></div>
+                    <div class="shipcontainer" ondrop="drop(event,this)" ondragover="allowDrop(event)"><img src="speedboat.png" draggable="true" ondragstart="drag(event)" id="speedboat" @click="rotateShip('speedboat')" class="normal"></div>
                 </div>
             </div>
-        <div id="shipPlacing">
-          
-            
-        
-       
-        
-        <div class="gamePlay" >
+    
             <div class="left-table">
                 <h3>Ship Locations</h3>
                 <h3>{{usernames[0]}} vs. {{usernames[1]}}</h3>
 
-<!--
-  <table class="ship-place-table">
-                <tr>
-                    <th></th>
-                    <th v-for="column in columns"> {{column}} </th>
-
-                </tr>
-                <tr v-for="row in rows">
-                    <th> {{row}} </th>
-                    <td v-for="column in columns" v-bind:id="row+column" ondrop="drop(event, this)" ondragover="allowDrop(event)" class="droptarget"></td>
-                </tr>
-                <div>
-
-                </div>
-            </table>
--->
-            
-            
-               
-                <table class="table" v-show="placing">
+                <table class="table">
                     <tr>
                         <th></th>
                         <th v-for="column in columns"> {{column}} </th>
-
                     </tr>
                     <tr v-for="row in rows">
                         <th> {{row}} </th>
@@ -87,10 +61,10 @@
 
                     </div>
                 </table>
-                <button @click="makeShipJSON">Done!</button>
+                <button @click="makeShipJSON" v-show="placing">Done!</button>
             </div>
-            </div>
-        </div>
+         
+      
             <div class="right-table" v-show="placing == false">
                 <h3>Salvo's</h3>
                 <h3>{{usernames[0]}} vs. {{usernames[1]}}</h3>
@@ -109,10 +83,11 @@
 
                     </div>
                 </table>
+                <button @click="sendSalvo">Fire salvo!</button>
             </div>
 
             <button @click="logout">Log out</button>
-            <button @click="sendSalvo">Fire salvo!</button>
+            
 
 
     </div>

@@ -10,6 +10,7 @@ var main = new Vue({
         salvo: [],
         locations: [],
         allowed: true,
+        currentShip: [],
         allShips: {
             containership: {
                 shipLength: 5,
@@ -29,7 +30,7 @@ var main = new Vue({
             fishingboat: {
                 shipLength: 3,
                 orientation: "horizontal",
-                locations: [],
+                locations: []
             },
             speedboat: {
                 shipLength: 2,
@@ -58,9 +59,8 @@ var main = new Vue({
         onConversionToJsonSuccessful: function (json) {
             main.gameData = json;
             console.log(this.gameData)
-            if (this.gameData.gameview.ships.length == 5 || this.shipLocations.length > 16) {
-                console.log(this.gameData.gameview.ships.length)
-                this.placing = false
+            if (this.gameData.gameview.ships.length > 0) {
+                console.log("ships found")
                 this.getShips()
                 this.getPlayers()
 
@@ -71,6 +71,7 @@ var main = new Vue({
                 if (this.gameData.gameview.enemysalvoes != null) {
                     this.getSalvoes(this.gameData.gameview.enemysalvoes, "ship ", "orange")
                 };
+                this.placing = false
             } else {
                 this.placing = true
             }
@@ -79,7 +80,7 @@ var main = new Vue({
             response.json()
                 .then(this.onConversionToJsonSuccessful)
         },
-        paramObj: function () {
+        determineGamePlayer: function () {
             var url = location.search;
             var x = url.split('=')[1];
             this.gamePlayer = x;
@@ -87,21 +88,29 @@ var main = new Vue({
         },
         getShips: function () {
             for (i = 0; i < this.gameData.gameview.ships.length; i++) {
-                for (j = 0; j < this.gameData.gameview.ships[i].location.length; j++) {
-                    this.shipLocations.push(this.gameData.gameview.ships[i].location[j])
+                let ship = this.gameData.gameview.ships
+                currentShip = eval("this.allShips." + ship[i].shipType)
+                if (currentShip.locations.length == 0) {
+                    for (j = 0; j < ship[i].shipLocations.length; j++) {
+                        currentShip.locations.push(ship[i].shipLocations[j])
+                    }
                 }
-            }
-            for (i = 0; i < this.shipLocations.length; i++) {
-                document.getElementById("ship " + this.shipLocations[i]).style.backgroundColor = "yellow"
-                document.getElementById("ship " + this.shipLocations[i]).style.backgroundImage = "none"
+                let cell = document.getElementById("ship " + currentShip.locations[0])
+                if (cell.hasChildNodes() == false) {
+                    let elem = document.getElementById(ship[i].shipType);
+                    elem.style.display = "block"
+                    if(currentShip.locations[0][0] == currentShip.locations[1][0]){elem.className="normal"; currentShip.orientation = "horizontal"}else{elem.className="rotate"; currentShip.orientation = "vertical"}
+                    cell.appendChild(elem);
+                    console.log(currentShip.locations[0][0])
+                    console.log(currentShip.locations[1][0])
+           
+                    }
             }
         },
         getSalvoes: function (salvotype, grid, color) {
             for (i = 0; i < salvotype.length; i++) {
                 for (j = 0; j < salvotype[i].location.length; j++) {
                     let shot = salvotype[i].location[j];
-                    console.log(shot)
-                    console.log(grid)
                     let cell = document.getElementById(grid + shot);
                     if (shot != "" && salvotype == this.gameData.gameview.usersalvoes) {
                         cell.style.backgroundColor = color;
@@ -139,7 +148,6 @@ var main = new Vue({
             document.getElementById("main").innerHTML = "<h1>No Peeking!!</h1>"
         },
         determineLocation: function (location, ship) {
-            console.log(location)
             this.allowed = true
             let shipName = eval("this.allShips." + ship)
             let shipLength = shipName.shipLength
@@ -150,13 +158,13 @@ var main = new Vue({
 
                         this.checkLocation((location[5] + i), ship)
                     } else {
-                        console.log("false");
+
                         this.allowed = false
                     }
                     if (this.allowed == true) {
                         locations.push(location[5] + i)
                     }
-                }console.log(location.slice(6)+ "vdsvs")
+                }
             }
             if (shipName.orientation === "vertical") {
                 let rowNumber = 0
@@ -170,7 +178,7 @@ var main = new Vue({
                     if (rowNumber < 10) {
                         this.checkLocation((this.rows[rowNumber] + location.slice(6)), ship)
                     } else {
-                        console.log("false");
+
                         this.allowed = false
                     }
                     if (this.allowed == true) {
@@ -194,7 +202,8 @@ var main = new Vue({
                 }
             }
         },
-        Rotate: function (shipId) {
+        rotateShip: function (shipId) {
+            if(this.placing){
             var element = document.getElementById(shipId);
             var ship = eval("this.allShips." + shipId)
             var parent = document.getElementById(shipId).parentNode.id
@@ -217,12 +226,13 @@ var main = new Vue({
                         ship.orientation = "vertical"
                     }
                 }
-            }
+            }}
         },
         makeShipJSON: function () {
             shipList = []
             for (vessel in this.allShips) {
                 locations = eval("this.allShips." + vessel + ".locations")
+                console.log(locations)
                 if (locations.length > 0) {
                     ship = {}
                     ship.shipType = vessel
@@ -233,18 +243,7 @@ var main = new Vue({
                     break
                 }
             }
-            if (shipList.length == 5) {
-                for (j = 0; j < shipList.length; j++) {
-                    for (i = 0; i < shipList[j].shipLocations.length; i++) {
-                        this.shipLocations.push(shipList[j].shipLocations[i])
-                    }
-                }
-
-
-                this.sendShips(shipList, this.paramObj())
-            }
-
-            console.log(shipList)
+            this.sendShips(shipList, this.determineGamePlayer())
         },
         sendShips: function (ships, gamePlayer) {
             fetch("/api/games/players/" + gamePlayer + "/ships", {
@@ -255,19 +254,21 @@ var main = new Vue({
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(ships)
-                }).then(response => console.log(response))
-                .then(this.placing = false)
-                .then(this.getDataObject(this.paramObj()))
+                })
+                .then(response => console.log(response))
+                .then(r => {
+                    this.placing = false
+                    this.getDataObject(this.determineGamePlayer())
+                })
         },
         sendSalvo: function () {
-            let gamePlayer = this.paramObj()
             if (this.salvo.length == 3) {
                 salvo = {
                     turn: 2,
                     salvoLocations: this.salvo
                 }
-                console.log(salvo)
-                fetch("/api/games/players/" + gamePlayer + "/salvos", {
+
+                fetch("/api/games/players/" + this.determineGamePlayer() + "/salvos", {
                         credentials: 'include',
                         method: 'POST',
                         headers: {
@@ -284,13 +285,13 @@ var main = new Vue({
         placeShot: function (shotCell) {
             if (!this.salvo.includes(shotCell)) {
                 if (this.salvo.length < 3) {
-                    console.log(this.salvo.includes(shotCell))
+
                     document.getElementById("salvo " + shotCell).style.backgroundColor = "red"
                     document.getElementById("salvo " + shotCell).style.backgroundImage = "none"
                     this.salvo.push(shotCell);
 
                 } else {
-                    console.log(this.salvo);
+
                     alert("3 shots fired!")
                 }
             } else {
@@ -300,8 +301,9 @@ var main = new Vue({
         }
     },
     created: function () {
-        this.getDataObject(this.paramObj())
+        this.getDataObject(this.determineGamePlayer())
     }
+
 })
 
 
@@ -310,19 +312,20 @@ function allowDrop(ev) {
 
 }
 
-function drag(event) {
+function drag(event) {if(main.placing){
     //    var img = document.createElement("img");
     //    img.src = "speedboat.png"
     //    event.dataTransfer.setDragImage(img, 50, 50);
     event.dataTransfer.setData("text", event.target.id);
-
+}
 }
 
-function drop(event, el) {
+function drop(event, el) {if(main.placing){
     event.preventDefault();
     var data = event.dataTransfer.getData("text");
-    console.log(data)
     main.determineLocation(event.target.id, data);
-    if (el.firstChild || main.allowed == false){}else {el.appendChild(document.getElementById(data));
-        event.target.style.backgroundColor = ""} 
-    }
+    if (el.firstChild || main.allowed == false) {} else {
+        el.appendChild(document.getElementById(data));
+        event.target.style.backgroundColor = ""
+    }}
+}

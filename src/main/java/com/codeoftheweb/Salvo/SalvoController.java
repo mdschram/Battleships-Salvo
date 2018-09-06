@@ -191,8 +191,8 @@ public class SalvoController {
 
     public Map<String, Object> makeShipDTO(Ship ship) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("shiptype", ship.getShipType());
-        dto.put("location", ship.getShipLocations());
+        dto.put("shipType", ship.getShipType());
+        dto.put("shipLocations", ship.getShipLocations());
         return dto;
     }
 
