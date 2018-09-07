@@ -35,8 +35,7 @@ public class SalvoApplication {
 											  GamePlayerRepository gameplayerRepository,
 											  ShipRepository shipRepository,
 											  SalvoRepository salvoRepository,
-											  ScoreRepository scoreRepository,
-											  MessageRepository messageRepository
+											  ScoreRepository scoreRepository
 		){
 			return (args) -> {
 
@@ -102,6 +101,9 @@ public class SalvoApplication {
 			gameplayerRepository.save(gamePlayer15);
 			gameplayerRepository.save(gamePlayer16);
 
+				List<String> locations28 = Arrays.asList("B9", "C9", "D9", "E9", "F9");
+				List<String> locations29 = Arrays.asList("G6", "G7", "G8", "G9");
+
 			List<String> locations1 = Arrays.asList("H2", "H3", "H4");
 			List<String> locations2 = Arrays.asList("E1", "F1", "G1");
 			List<String> locations3 = Arrays.asList("B4", "B5");
@@ -130,33 +132,36 @@ public class SalvoApplication {
 			List<String> locations26 = Arrays.asList("A2", "A3", "A4");
 			List<String> locations27 = Arrays.asList("G6", "H6");
 
+
 			Ship ship1 = new Ship("fishingboat", locations1, gamePlayer1);
 			Ship ship2 = new Ship("yacht", locations2, gamePlayer1);
 			Ship ship3 = new Ship("speedboat", locations3, gamePlayer1);
 			Ship ship4 = new Ship("fishingboat", locations4, gamePlayer2);
-			Ship ship5 = new Ship("speedboat ", locations5, gamePlayer2);
+			Ship ship5 = new Ship("speedboat", locations5, gamePlayer2);
 			Ship ship6 = new Ship("fishingboat", locations6, gamePlayer3);
-			Ship ship7 = new Ship("speedboat ", locations7, gamePlayer3);
+			Ship ship7 = new Ship("speedboat", locations7, gamePlayer3);
 			Ship ship8 = new Ship("yacht", locations8, gamePlayer4);
-			Ship ship9 = new Ship("speedboat ", locations9, gamePlayer4);
+			Ship ship9 = new Ship("speedboat", locations9, gamePlayer4);
 			Ship ship10 = new Ship("fishingboat", locations10, gamePlayer5);
-			Ship ship11 = new Ship("speedboat ", locations11, gamePlayer5);
+			Ship ship11 = new Ship("speedboat", locations11, gamePlayer5);
 			Ship ship12 = new Ship("yacht", locations12, gamePlayer6);
-			Ship ship13 = new Ship("speedboat ", locations13, gamePlayer6);
+			Ship ship13 = new Ship("speedboat", locations13, gamePlayer6);
 			Ship ship14 = new Ship("fishingboat", locations14, gamePlayer7);
-			Ship ship15 = new Ship("speedboat ", locations15, gamePlayer7);
+			Ship ship15 = new Ship("speedboat", locations15, gamePlayer7);
 			Ship ship16 = new Ship("yacht", locations16, gamePlayer8);
-			Ship ship17 = new Ship("speedboat ", locations17, gamePlayer8);
+			Ship ship17 = new Ship("speedboat", locations17, gamePlayer8);
 			Ship ship18 = new Ship("fishingboat", locations18, gamePlayer9);
-			Ship ship19 = new Ship("speedboat ", locations19, gamePlayer9);
+			Ship ship19 = new Ship("speedboat", locations19, gamePlayer9);
 			Ship ship20 = new Ship("yacht", locations20, gamePlayer10);
-			Ship ship21 = new Ship("speedboat ", locations21, gamePlayer10);
+			Ship ship21 = new Ship("speedboat", locations21, gamePlayer10);
 			Ship ship22 = new Ship("fishingboat", locations22, gamePlayer11);
-			Ship ship23 = new Ship("speedboat ", locations23, gamePlayer11);
+			Ship ship23 = new Ship("speedboat", locations23, gamePlayer11);
 			Ship ship24= new Ship("fishingboat", locations24, gamePlayer15);
-			Ship ship25 = new Ship("speedboat ", locations25, gamePlayer15);
+			Ship ship25 = new Ship("speedboat", locations25, gamePlayer15);
 			Ship ship26 = new Ship("yacht", locations26, gamePlayer16);
-			Ship ship27 = new Ship("speedboat ", locations27, gamePlayer16);
+			Ship ship27 = new Ship("speedboat", locations27, gamePlayer16);
+			Ship ship28 = new Ship("containership", locations28, gamePlayer1);
+			Ship ship29 = new Ship("cruiseship", locations29, gamePlayer1);
 
 			shipRepository.save(ship1);
 			shipRepository.save(ship2);
@@ -185,6 +190,8 @@ public class SalvoApplication {
 			shipRepository.save(ship25);
 			shipRepository.save(ship26);
 			shipRepository.save(ship27);
+			shipRepository.save(ship28);
+			shipRepository.save(ship29);
 
 				List<String> salvoLocations1 = Arrays.asList("B5", "C5", "F1");
 				List<String> salvoLocations2 = Arrays.asList("B4", "B5", "B6");
@@ -271,8 +278,7 @@ public class SalvoApplication {
 				scoreRepository.save(score8);
 
 
-				Message message1 = new Message("dit is een test", gamePlayer1);
-				messageRepository.save(message1);
+
 			};
 		}
 	}

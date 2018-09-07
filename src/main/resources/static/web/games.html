@@ -19,43 +19,49 @@
     <h1>Salvo Games!!!</h1>
 
     <div id="main">
-        <ul id="gameslist">
-            <li v-for="game in gamesList"><a>
-    {{game.game}}{{ game.date}} : {{ game.player1}}, {{game.player2}}</a><button v-if="game.gameLink != 0" @click="goToGamePage(game.gameLink)">Open</button> <button @click="joinGame(game.game)" v-if="game.numberOfPlayers <2 && userLoggedIn && game.player1 != gameData.player.username ">Join</button></li>
-
-
-        </ul>
-
-
-        <div id="login-form">
+       <div class="loginAndScores">
+        <div id="formAndButtons">
+           <div class="inputs">
             <label>Name: <input id="username"type="text" name="username"></label>
             <label>Password: <input id="password" type="text" name="password"></label>
-            <button @click="logout" v-if="userLoggedIn">Log out</button>
-            <button @click="login" v-else>Log in</button>
-            <button @click="createPlayer" v-if="userLoggedIn == false">Create Player</button>
-            <button @click="createGame">Create game</button>
+            </div>
+            <div class="loginButtons">
+            <button @click="logout" v-if="userLoggedIn" class="button wide">Log out</button>
+            <button @click="login" v-else class="button wide">Log in</button>
+            <button @click="createPlayer" v-if="userLoggedIn == false" class="button wide">Create Player</button>
+            <button @click="createGame" class="button wide" v-if="userLoggedIn">Create game</button>
+            </div>
         </div>
-        <h3>{{createPlayerMessage}}</h3>
-        <h3>Current User: {{currentUser}}</h3>
+        <div class="scores">
         <h1>Scores</h1>
         <table class="scoretable">
             <thead>
                 <th>Player</th>
-                <th>Wins</th>
-                <th>Losses</th>
-                <th>Ties</th>
-                <th>Total Score</th>
+                <th class="scoreCell">Wins</th>
+                <th class="scoreCell">Losses</th>
+                <th class="scoreCell" >Ties</th>
+                <th class="scoreCell">Total Score</th>
             </thead>
             <tbody>
                 <tr v-for="player in scoreData">
-                    <td>{{player.player}}</td>
-                    <td>{{player.wins}}</td>
-                    <td>{{player.losses}}</td>
-                    <td>{{player.ties}}</td>
-                    <td>{{player.totalscore}}</td>
+                    <td class="scoreCell">{{player.player}}</td>
+                    <td class="scoreCell">{{player.wins}}</td>
+                    <td class="scoreCell">{{player.losses}}</td>
+                    <td class="scoreCell">{{player.ties}}</td>
+                    <td class="scoreCell">{{player.totalscore}}</td>
                 </tr>
             </tbody>
         </table>
+        </div>
+        </div>
+        <div class="gamesList">
+        <ul>
+            <div v-for="game in gamesList" class="game"><a>
+    {{ game.player1}} vs {{game.player2}}</a><button v-if="game.gameLink != 0" @click="goToGamePage(game.gameLink)">Open</button> <button @click="joinGame(game.game)" v-if="game.numberOfPlayers <2 && userLoggedIn && game.player1 != gameData.player.username ">Join</button></div>
+
+
+        </ul>
+        </div>
 
     </div>
     <script src="./script/games.js"></script>

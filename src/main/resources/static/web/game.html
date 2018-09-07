@@ -61,7 +61,7 @@
 
                     </div>
                 </table>
-                <button @click="makeShipJSON" v-show="placing">Done!</button>
+                
             </div>
          
       
@@ -83,11 +83,13 @@
 
                     </div>
                 </table>
-                <button @click="sendSalvo">Fire salvo!</button>
+                
             </div>
-
-            <button @click="logout">Log out</button>
-            
+            <div class="rightSideButtons">
+            <button @click="logout" class="button wide">Log out</button>
+            <button @click="sendSalvo" class="button wide" v-if="placing == false">Fire salvo!</button>
+            <button @click="makeShipJSON" v-show="placing" class="button wide">Start Game</button>
+            </div>
 
 
     </div>

@@ -1,30 +1,28 @@
-td {
+body,
+html {
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    overflow-y: hidden;
+}
+
+
+body {
+    background-image: url(4451708-tropical-beach-wallpapers.jpg);
+    background-repeat: no-repeat;
+    background-size: cover
+}
+
+td {width: 45px;
+    height: 45px;
     border: solid 1px black;
     margin: 0;
-/*    background-image: url("blue-swimming-pool-rippled-water-detail_1258-710.jpg")*/
+    background-image: url("blue-swimming-pool-rippled-water-detail_1258-710.jpg")
 }
 
 th {
     background-color: #d0451b;
     border: solid 2px black;
     border-radius: 10px
-}
-
-td.salvoTable {
-    width: 30px;
-    height: 30px
-}
-
-td.shipTable{
-    width: 30px;
-    height: 30px
-}
-
-th,
-tr,
-td.droptarget {
-    width: 45px;
-    height: 45px
 }
 
 
@@ -152,25 +150,20 @@ h3 {
     height: 50px
 }
 
+.table{width: 568px;
+margin-left: 20px}
+
 .right-table {
     display: flex;
     flex-direction: column
 }
 
-#shipPlacing,
-.gamePlay {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 100%;
-    width: 100%
-}
-
-
 .left-table {
     display: flex;
     flex-direction: column
 }
+
+
 
 #main {
     display: flex;
@@ -181,54 +174,121 @@ h3 {
     margin-top: 10px
 }
 
+th,
+tr,
+td.droptarget {
+    width: 45px;
+    height: 45px
+}
+
+.miss {
+    background-image: url("");
+    background-color: green;
+    width: 45px;
+    height: 45px
+}
+
+.hit {
+    background-image: url("");
+    background-color: red;
+    width: 45px;
+    height: 45px
+}
+
+.gamesList{width: 50%;
+    height: 80%;
+    margin-bottom: 20px;
+background-color: black;
+opacity: 0.7;
+color: white;
+font-weight: bold;
+overflow-X: hidden;
+    overflow-Y: scroll;
+}
+
+.loginAndScores{width: 50%;
+margin-left: 20px}
+
+.scores{width: 100%;
+margin: 0px;
+}
+
+#formAndButtons{display: flex;
+flex-direction: row}
+
+input{width: 100%;
+border: 2px solid blue;
+    border-radius: 4px;
+margin-top:10px;
+height: 25px}
+
+.loginButtons{display: flex;
+flex-direction: column}
+
+.inputs{display: flex;
+flex-direction: column}
+
+th.scoreCell{width: 200px}
+
+td.scoreCell{background-image: url(""); background-color: skyblue;
+width: 100%;
+text-align: center}
+
+.rightSideButtons{width:150px; 
+margin-top: 150px;
+margin-right: 20px}
+
+ul{font-family: Arial, Helvetica, sans-serif;}
+
+.game{height: 60px;
+display: flex;
+justify-content: space-between;
+border-bottom:solid 1px black;}
+
 button {
-	-moz-box-shadow:inset 0px 1px 0px 0px #cf866c;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #cf866c;
-	box-shadow:inset 0px 1px 0px 0px #cf866c;
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #d0451b), color-stop(1, #bc3315));
-	background:-moz-linear-gradient(top, #d0451b 5%, #bc3315 100%);
-	background:-webkit-linear-gradient(top, #d0451b 5%, #bc3315 100%);
-	background:-o-linear-gradient(top, #d0451b 5%, #bc3315 100%);
-	background:-ms-linear-gradient(top, #d0451b 5%, #bc3315 100%);
-	background:linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#d0451b', endColorstr='#bc3315',GradientType=0);
-	background-color:#d0451b;
-	-moz-border-radius:9px;
-	-webkit-border-radius:9px;
-	border-radius:9px;
-	border:1px solid #942911;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:16px;
-	padding:16px 40px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #854629;
-    height: 50px
+    -moz-box-shadow: inset 0px 1px 0px 0px #cf866c;
+    -webkit-box-shadow: inset 0px 1px 0px 0px #cf866c;
+    box-shadow: inset 0px 1px 0px 0px #cf866c;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #d0451b), color-stop(1, #bc3315));
+    background: -moz-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+    background: -webkit-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+    background: -o-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+    background: -ms-linear-gradient(top, #d0451b 5%, #bc3315 100%);
+    background: linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d0451b', endColorstr='#bc3315', GradientType=0);
+    background-color: #d0451b;
+    -moz-border-radius: 9px;
+    -webkit-border-radius: 9px;
+    border-radius: 9px;
+    border: 1px solid #942911;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 16px;
+    padding: 16px 40px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #854629;
+    height: 50px;width: 120px;
+    margin: 10px;
+    opacity: 1.0;
 }
+
+.button.wide{width: 150px;
+padding: 10px}
+
 button:hover {
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bc3315), color-stop(1, #d0451b));
-	background:-moz-linear-gradient(top, #bc3315 5%, #d0451b 100%);
-	background:-webkit-linear-gradient(top, #bc3315 5%, #d0451b 100%);
-	background:-o-linear-gradient(top, #bc3315 5%, #d0451b 100%);
-	background:-ms-linear-gradient(top, #bc3315 5%, #d0451b 100%);
-	background:linear-gradient(to bottom, #bc3315 5%, #d0451b 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bc3315', endColorstr='#d0451b',GradientType=0);
-	background-color:#bc3315;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bc3315), color-stop(1, #d0451b));
+    background: -moz-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+    background: -webkit-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+    background: -o-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+    background: -ms-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+    background: linear-gradient(to bottom, #bc3315 5%, #d0451b 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bc3315', endColorstr='#d0451b', GradientType=0);
+    background-color: #bc3315;
 }
+
 button:active {
-	position:relative;
-	top:1px;
+    position: relative;
+    top: 1px;
 }
-
-
-body,
-html {
-    font-family: Arial, Helvetica, sans-serif;
-    height: 100%
-}
-
-body{background-image: url(4451708-tropical-beach-wallpapers.jpg);
-background-repeat: no-repeat;
-background-size: cover}
