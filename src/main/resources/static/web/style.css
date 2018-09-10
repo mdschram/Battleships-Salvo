@@ -188,6 +188,13 @@ td.droptarget {
     height: 45px
 }
 
+.shot {
+    background-image: url("");
+    background-color: yellow;
+    width: 45px;
+    height: 45px
+}
+
 .hit {
     background-image: url("");
     background-color: red;

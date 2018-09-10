@@ -171,8 +171,11 @@ public class SalvoController {
 
     public Map<String, Object> makeSalvoDTO(Salvo salvo) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        GamePlayer user = salvo.getGamePlayer();
+        GamePlayer opponent = user.getGame().getGamePlayers().stream().filter(gp -> gp != user).findFirst().orElse(null);
         dto.put("turn", salvo.getTurn());
         dto.put("location", salvo.getSalvoLocations());
+        dto.put("hits", (salvo.getSalvoLocations().stream().map(salvolocation -> opponent.getShips().stream().map(ship -> ship.getShipLocations().stream().filter(shiplocation -> shiplocation == salvolocation)).collect(toList()))));
         return dto;
     }
 
@@ -223,6 +226,17 @@ public class SalvoController {
         dto.put("ties", player.getScores().stream().filter(s -> s.getScore() == 0.5).count());
         return dto;
     }
+
+    public Map<String, Object> hitsAndSinks(GamePlayer gamePlayer, Salvo salvo) {
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        GamePlayer opponent = gamePlayer.getGame().getGamePlayers().stream().filter(gp -> gp != gamePlayer).findFirst().orElse(null);
+        dto.put("id", gamePlayer.getId());
+        dto.put("hits", salvo.getSalvoLocations().stream().map(salvolocation -> opponent.getShips().stream().map(ship -> ship.getShipLocations().stream().filter(shiplocation -> shiplocation == salvolocation))).collect(toList()));
+
+        return dto;
+    }
+
+
 
     public Player getCurrentUser(Authentication authentication){
         return playerRepository.findByUserName(authentication.getName());
