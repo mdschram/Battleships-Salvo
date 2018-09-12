@@ -12,6 +12,7 @@ public class Ship {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String shipType;
+//    private boolean sunk;
 
     @ElementCollection
     private List<String> shipLocations;
@@ -23,11 +24,22 @@ public class Ship {
     public Ship() {
     }
 
-    public Ship(String shipType, List<String> shipLocations, GamePlayer gamePlayer) {
+    public Ship(String shipType, List<String> shipLocations, GamePlayer gamePlayer
+//            , Boolean sunk
+    ) {
         this.shipType = shipType;
         this.shipLocations = shipLocations;
         this.gamePlayer = gamePlayer;
+//        this.sunk = sunk;
     }
+
+//    public boolean isSunk() {
+//        return sunk;
+//    }
+
+//    public void setSunk(boolean sunk) {
+//        this.sunk = sunk;
+//    }
 
     public long getId() {
         return id;

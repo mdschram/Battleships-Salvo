@@ -115,12 +115,24 @@ var main = new Vue({
             }
         },
         getSalvoes: function (salvotype, grid) {
+
             for (i = 0; i < salvotype.length; i++) {
                 for (j = 0; j < salvotype[i].location.length; j++) {
                     let shot = salvotype[i].location[j];
                     let cell = document.getElementById(grid + shot);
                     if (shot != "" && salvotype == this.gameData.gameview.usersalvoes) {
-                        cell.className += " miss";
+                        if (!this.gameData.gameview.userhits.includes(shot)) {
+                            cell.className += " miss";
+                        } else {
+                            //                            cell.className += " hit";
+                            var img = document.createElement("img");
+                            img.src = "explosion.png";
+                            if (cell.hasChildNodes()) {
+                                if (cell.firstChild.className == "rotate" || cell.firstChild.className == "normal") {
+                                    cell.appendChild(img);
+                                }
+                            } else {cell.appendChild(img)};
+                        }
                         this.allShots.push(shot)
                     } else if (shot != "") {
                         cell.className += " miss";
@@ -128,13 +140,17 @@ var main = new Vue({
                     for (var vessel in this.allShips) {
                         locations = eval("this.allShips." + vessel + ".locations")
                         if (locations.includes(shot) && salvotype == this.gameData.gameview.enemysalvoes) {
-                            cell.className += " hit";
+                            cell.className = "shipTable";
+                            //                            cell.className += " hit";
+                            var img = document.createElement("img");
+                            img.src = "explosion.png";
+                            if (cell.hasChildNodes()) {
+                                if (cell.firstChild.className != "rotate" && cell.firstChild.className != "normal") {
+                                    cell.appendChild(img);
+                                }
+                            } else {cell.appendChild(img)};
                         }
                     }
-
-
-
-
                 }
             }
         },
@@ -167,6 +183,7 @@ var main = new Vue({
                     if (i < 11) {
 
                         this.checkLocation((location[5] + i), ship)
+
                     } else {
 
                         this.allowed = false
@@ -202,12 +219,12 @@ var main = new Vue({
             }
         },
         checkLocation: function (loc, ship) {
-            this.allowed = true
             for (vessel in this.allShips) {
                 checkShip = eval("this.allShips." + vessel + ".locations")
                 if (vessel !== ship) {
                     if (checkShip.includes(loc)) {
                         this.allowed = false;
+
                     }
                 }
             }
@@ -288,6 +305,9 @@ var main = new Vue({
                         body: JSON.stringify(salvo)
                     }).then(response => console.log(response))
                     .then(this.salvo = [])
+                    .then(r => {
+                        this.getDataObject(this.determineGamePlayer())
+                    })
             } else {
                 alert("please fire 3 shots")
             }
@@ -307,7 +327,7 @@ var main = new Vue({
                 } else {
                     this.salvo = this.salvo.filter(e => e !== shotCell);
                     this.allShots = this.allShots.filter(e => e !== shotCell);
-                    document.getElementById("salvo " + shotCell).className -= " miss"
+                    document.getElementById("salvo " + shotCell).className = "salvoTable"
                     console.log("delete shot")
                 }
             }
@@ -339,9 +359,7 @@ function drop(event, el) {
         main.determineLocation(event.target.id, data);
         if (el.firstChild || main.allowed == false) {} else {
             el.appendChild(document.getElementById(data));
-            event.target.style.backgroundColor = ""
+
         }
     }
 }
-
-

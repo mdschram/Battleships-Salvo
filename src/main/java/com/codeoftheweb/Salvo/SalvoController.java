@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -97,7 +99,10 @@ public class SalvoController {
 
     @RequestMapping(path = "/game_view/{gamePlayerId}", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getGamePlayerData(@PathVariable Long gamePlayerId, Authentication authentication) {
+
         GamePlayer user = gameplayerRepository.findOne(gamePlayerId);
+        GamePlayer opponent = user.getGame().getGamePlayers().stream().filter(gp -> gp != user).findFirst().orElse(null);
+
         if (user.getPlayer().getId() == getCurrentUser(authentication).getId()) {
             Map<String, Object> gameView = new LinkedHashMap<>();
             gameView.put("game", makeGameDTO(user.getGame()));
@@ -106,8 +111,15 @@ public class SalvoController {
                     .map(thisShip -> makeShipDTO(thisShip))
                     .collect(toList()));
             gameView.put("usersalvoes", getUserSalvos(user));
+            gameView.put("userhits", getHits(user));
+            gameView.put("usersinks", getSunkenShips(user).stream().map(ship -> ship.getShipType()).collect(toList()));
             if (user.getGame().getGamePlayers().size() == 2) {
                 gameView.put("enemysalvoes", getEnemySalvos(user));
+                gameView.put("enemyhits", getHits(opponent));
+                gameView.put("enemysinks", getSunkenShips(opponent).stream().map(ship -> ship.getShipType()).collect(toList())
+
+
+                );
             } else {
                 gameView.put("enemysalvoes", null);
             }
@@ -166,6 +178,7 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("shipType", ship.getShipType());
         dto.put("shipLocations", ship.getShipLocations());
+        dto.put("sunk", getSinks(ship));
         return dto;
     }
 
@@ -175,9 +188,9 @@ public class SalvoController {
         GamePlayer opponent = user.getGame().getGamePlayers().stream().filter(gp -> gp != user).findFirst().orElse(null);
         dto.put("turn", salvo.getTurn());
         dto.put("location", salvo.getSalvoLocations());
-        dto.put("hits", (salvo.getSalvoLocations().stream().map(salvolocation -> opponent.getShips().stream().map(ship -> ship.getShipLocations().stream().filter(shiplocation -> shiplocation == salvolocation)).collect(toList()))));
         return dto;
     }
+
 
     public Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
@@ -227,13 +240,39 @@ public class SalvoController {
         return dto;
     }
 
-    public Map<String, Object> hitsAndSinks(GamePlayer gamePlayer, Salvo salvo) {
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        GamePlayer opponent = gamePlayer.getGame().getGamePlayers().stream().filter(gp -> gp != gamePlayer).findFirst().orElse(null);
-        dto.put("id", gamePlayer.getId());
-        dto.put("hits", salvo.getSalvoLocations().stream().map(salvolocation -> opponent.getShips().stream().map(ship -> ship.getShipLocations().stream().filter(shiplocation -> shiplocation == salvolocation))).collect(toList()));
+    private List<String> shipLocations (GamePlayer gamePlayer) {
+        return gamePlayer.getShips()
+                .stream()
+                .flatMap(s -> s.getShipLocations().stream())
+                .collect(toList());
+    }
 
-        return dto;
+    private List<String> salvoLocations (GamePlayer gamePlayer) {
+           return gamePlayer.getSalvoes()
+                   .stream()
+                   .flatMap(salvo -> salvo.getSalvoLocations().stream())
+                   .collect(Collectors.toList());
+    }
+
+    private List<String> getHits(GamePlayer gamePlayer){
+       GamePlayer opponent = gamePlayer.getGame().getGamePlayers().stream().filter(gp -> gp != gamePlayer).findFirst().orElse(null);
+        return  salvoLocations(gamePlayer)
+                .stream().filter(shot -> shipLocations(opponent)
+                        .stream().anyMatch(shiplocation -> shiplocation == shot)).collect(toList());
+    }
+
+    private boolean getSinks(Ship ship){
+        GamePlayer opponent = ship.getGamePlayer().getGame().getGamePlayers().stream().filter(gp -> gp != ship.getGamePlayer()).findFirst().orElse(null);
+        return ship.getShipLocations()
+                        .stream()
+                        .allMatch(location -> getHits(opponent)
+                                .stream()
+                                .anyMatch(hit -> hit == location));
+    }
+
+    private Set<Ship> getSunkenShips(GamePlayer gamePlayer){
+        return gamePlayer.getShips().stream().filter(ship -> getSinks(ship) == true).collect(toSet());
+
     }
 
 
@@ -241,7 +280,6 @@ public class SalvoController {
     public Player getCurrentUser(Authentication authentication){
         return playerRepository.findByUserName(authentication.getName());
     }
-
 
 
     public Object getSalvoes(GamePlayer gamePlayer) {

@@ -193,9 +193,9 @@ public class SalvoApplication {
 			shipRepository.save(ship28);
 			shipRepository.save(ship29);
 
-				List<String> salvoLocations1 = Arrays.asList("B5", "C5", "F1");
+				List<String> salvoLocations1 = Arrays.asList("B5", "C5", "");
 				List<String> salvoLocations2 = Arrays.asList("B4", "B5", "B6");
-				List<String> salvoLocations3 = Arrays.asList("F2", "D5", "");
+				List<String> salvoLocations3 = Arrays.asList("", "D5", "");
 				List<String> salvoLocations4 = Arrays.asList("E1", "H3", "A2");
 				List<String> salvoLocations5 = Arrays.asList("A2", "A4", "G6");
 				List<String> salvoLocations6 = Arrays.asList("B5", "D5", "C7");

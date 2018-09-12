@@ -194,6 +194,8 @@ td.droptarget {
     width: 45px;
     height: 45px
 }
+img {position: relative;
+    z-index: 1}
 
 .hit {
     background-image: url("");
