@@ -36,6 +36,27 @@ td.salvoTable:hover {
     flex-direction: column;
 }
 
+.notShooting {opacity : 0.5
+}
+
+
+.waitingMessage{
+    background-color: white;
+    padding: 15px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1
+}
+
+#salvoTableTotal{position: relative;
+    width: 568px;
+margin-left: 20px
+
+}
+
+
 #containership.normal {
     width: 520%;
     height: 35px;
@@ -111,7 +132,9 @@ td.salvoTable:hover {
 h1,
 h3 {
     margin-left: 50px;
-    margin-right: 50px
+    margin-right: 50px;
+    background-color: white;
+    padding: 20px;
 }
 
 .rotate#containership {
@@ -155,12 +178,15 @@ margin-left: 20px}
 
 .right-table {
     display: flex;
-    flex-direction: column
+    flex-direction: column;
+    
 }
 
 .left-table {
     display: flex;
-    flex-direction: column
+    flex-direction: column;
+    
+    
 }
 
 
@@ -203,6 +229,9 @@ img {position: relative;
     width: 45px;
     height: 45px
 }
+
+.pin{height: 200%;
+width: 200%}
 
 .gamesList{width: 50%;
     height: 80%;

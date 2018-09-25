@@ -112,18 +112,24 @@ public class SalvoController {
                     .collect(toList()));
             gameView.put("usersalvoes", getUserSalvos(user));
             gameView.put("userhits", getHits(user));
-            gameView.put("usersinks", getSunkenShips(user).stream().map(ship -> ship.getShipType()).collect(toList()));
+            gameView.put("usersinks", getSunkShips(user)
+                    .stream()
+                    .map(ship -> ship.getShipType())
+                    .collect(toList()));
             if (user.getGame().getGamePlayers().size() == 2) {
                 gameView.put("enemysalvoes", getEnemySalvos(user));
                 gameView.put("enemyhits", getHits(opponent));
-                gameView.put("enemysinks", getSunkenShips(opponent).stream().map(ship -> ship.getShipType()).collect(toList())
-
-
-                );
+                gameView.put("enemysinks", getSunkShips(opponent)
+                        .stream()
+                        .map(ship -> ship.getShipType())
+                        .collect(toList()));
             } else {
                 gameView.put("enemysalvoes", null);
+                gameView.put("enemyhits", null);
+                gameView.put("enemysinks", null);
             }
             return new ResponseEntity(makeMap("gameview", gameView), HttpStatus.OK);
+
         } else {
             return new ResponseEntity(makeMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
         }
@@ -155,11 +161,13 @@ public class SalvoController {
                                                Authentication authentication,
                                                @RequestBody Salvo salvo) {
         GamePlayer gamePlayer = gameplayerRepository.findOne(gamePlayerId);
-        if (gamePlayer.getPlayer().getId() == getCurrentUser(authentication).getId() || getCurrentUser(authentication) == null) {
-            if (gamePlayer != null && salvo.getSalvoLocations().size() == 3) {
-                salvo.setGamePlayer(gamePlayer);
+        if (gamePlayer.getPlayer().getId() == getCurrentUser(authentication).getId() || getCurrentUser(authentication) != null) {
+            if (gamePlayer != null && salvo.getSalvoLocations().size() == 10 && salvoRepository.findAll().stream().filter(salvorep -> salvorep.getTurn() == salvo.getTurn() && salvorep.getGamePlayer() == gamePlayer ).findFirst().orElse(null) == null) {
+            salvo.setGamePlayer(gamePlayer);
                 salvoRepository.save(salvo);
-            return new ResponseEntity("created", HttpStatus.CREATED);}
+                System.out.println();
+            return new ResponseEntity("created", HttpStatus.CREATED);
+            }
          else {   return new ResponseEntity(makeMap("error", "Forbidden"), HttpStatus.FORBIDDEN);
     }} else{
     return new ResponseEntity(makeMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
@@ -201,7 +209,29 @@ public class SalvoController {
                 .stream()
                 .map(gameplayer -> makeGamePlayerDTO(gameplayer))
                 .collect(toList()));
+        dto.put("gamestate", getGameState(game));
         return dto;
+    }
+
+    public Map<String, Object> getGameState(Game game){
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        int leastSalvoes = game.getGamePlayers().stream().mapToInt(gameplayer -> gameplayer.getSalvoes().size()).min().orElse(-1);
+        int mostSalvoes = game.getGamePlayers().stream().mapToInt(gameplayer -> gameplayer.getSalvoes().size()).max().orElse(-1);
+        long firstPlayerId = game.getGamePlayers().stream().mapToLong(gamePlayer -> gamePlayer.getId()).min().orElse(-1);
+        long secondPlayerId = game.getGamePlayers().stream().mapToLong(gamePlayer -> gamePlayer.getId()).max().orElse(-1);
+        boolean gameOver = false;
+        GamePlayer gamePlayerToFire = new GamePlayer();
+        if(leastSalvoes == mostSalvoes){gamePlayerToFire = gameplayerRepository.findOne(firstPlayerId);}else{
+            gamePlayerToFire = gameplayerRepository.findOne(secondPlayerId);}
+            if(leastSalvoes > 3){
+        if(getSunkShips(gameplayerRepository.findOne(firstPlayerId)).size() == 5 && leastSalvoes == mostSalvoes) {gameOver = true; }
+        if(getSunkShips(gameplayerRepository.findOne(secondPlayerId)).size() == 5 && leastSalvoes == mostSalvoes) {gameOver = true; }
+        }
+        dto.put("turn", leastSalvoes + 1);
+        dto.put("playerToFire", gamePlayerToFire.getId());
+        dto.put("gameover", gameOver);
+    return dto;
+
     }
 
     public Object getUserSalvos(GamePlayer gamePlayer){
@@ -257,8 +287,10 @@ public class SalvoController {
     private List<String> getHits(GamePlayer gamePlayer){
        GamePlayer opponent = gamePlayer.getGame().getGamePlayers().stream().filter(gp -> gp != gamePlayer).findFirst().orElse(null);
         return  salvoLocations(gamePlayer)
-                .stream().filter(shot -> shipLocations(opponent)
-                        .stream().anyMatch(shiplocation -> shiplocation == shot)).collect(toList());
+                .stream()
+                .filter(shot -> shipLocations(opponent)
+                        .stream()
+                        .anyMatch(shiplocation -> shiplocation == shot)).collect(toList());
     }
 
     private boolean getSinks(Ship ship){
@@ -270,12 +302,9 @@ public class SalvoController {
                                 .anyMatch(hit -> hit == location));
     }
 
-    private Set<Ship> getSunkenShips(GamePlayer gamePlayer){
+    private Set<Ship> getSunkShips(GamePlayer gamePlayer){
         return gamePlayer.getShips().stream().filter(ship -> getSinks(ship) == true).collect(toSet());
-
     }
-
-
 
     public Player getCurrentUser(Authentication authentication){
         return playerRepository.findByUserName(authentication.getName());

@@ -5,12 +5,14 @@ var main = new Vue({
         columns: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
         gameData: {},
         placing: true,
+        turn: 1,
         shipLocations: [],
         usernames: [],
         salvo: [],
         allShots: [],
         locations: [],
         allowed: true,
+        notShooting: false,
         currentShip: [],
         allShips: {
             containership: {
@@ -51,7 +53,8 @@ var main = new Vue({
                     r => {
                         if (r.status == 401) {
                             this.peekingPlayer()
-                        } else if (r.status == 200) {
+                        } 
+                        else if (r.status == 200) {
                             this.onDataFetched(r)
                         }
                     },
@@ -60,6 +63,10 @@ var main = new Vue({
         onConversionToJsonSuccessful: function (json) {
             main.gameData = json;
             console.log(this.gameData)
+            if(this.gameData.gameview.game.gamestate.playerToFire.toString() != this.determineGamePlayer()){
+                document.getElementById("salvoTableTotal").style.opacity = "0.5"
+                this.notShooting = true
+            }
             if (this.gameData.gameview.ships.length == 5) {
                 this.getShips()
                 this.getPlayers()
@@ -122,16 +129,11 @@ var main = new Vue({
                     let cell = document.getElementById(grid + shot);
                     if (shot != "" && salvotype == this.gameData.gameview.usersalvoes) {
                         if (!this.gameData.gameview.userhits.includes(shot)) {
+                            cell.className -= " shot";
                             cell.className += " miss";
                         } else {
-                            //                            cell.className += " hit";
-                            var img = document.createElement("img");
-                            img.src = "explosion.png";
-                            if (cell.hasChildNodes()) {
-                                if (cell.firstChild.className == "rotate" || cell.firstChild.className == "normal") {
-                                    cell.appendChild(img);
-                                }
-                            } else {cell.appendChild(img)};
+                            cell.className -= " shot";
+                            cell.className += " hit";
                         }
                         this.allShots.push(shot)
                     } else if (shot != "") {
@@ -141,14 +143,7 @@ var main = new Vue({
                         locations = eval("this.allShips." + vessel + ".locations")
                         if (locations.includes(shot) && salvotype == this.gameData.gameview.enemysalvoes) {
                             cell.className = "shipTable";
-                            //                            cell.className += " hit";
-                            var img = document.createElement("img");
-                            img.src = "explosion.png";
-                            if (cell.hasChildNodes()) {
-                                if (cell.firstChild.className != "rotate" && cell.firstChild.className != "normal") {
-                                    cell.appendChild(img);
-                                }
-                            } else {cell.appendChild(img)};
+                            cell.className += " hit";
                         }
                     }
                 }
@@ -289,12 +284,11 @@ var main = new Vue({
                 })
         },
         sendSalvo: function () {
-            if (this.salvo.length == 3) {
+            if (this.salvo.length == 10) {
                 salvo = {
-                    turn: 2,
+                    turn: this.gameData.gameview.game.gamestate.turn,
                     salvoLocations: this.salvo
                 }
-
                 fetch("/api/games/players/" + this.determineGamePlayer() + "/salvos", {
                         credentials: 'include',
                         method: 'POST',
@@ -306,21 +300,20 @@ var main = new Vue({
                     }).then(response => console.log(response))
                     .then(this.salvo = [])
                     .then(r => {
-                        this.getDataObject(this.determineGamePlayer())
+                        this.getDataObject(this.determineGamePlayer());
                     })
             } else {
                 alert("please fire 3 shots")
             }
         },
         placeShot: function (shotCell) {
-            console.log(this.allShots)
+            if(this.gameData.gameview.game.gamestate.playerToFire.toString() == this.determineGamePlayer()){
             if (!this.allShots.includes(shotCell) || this.salvo.includes(shotCell)) {
                 if (!this.salvo.includes(shotCell)) {
-                    if (this.salvo.length < 3) {
+                    if (this.salvo.length < 10) {
                         document.getElementById("salvo " + shotCell).className += " shot"
                         this.salvo.push(shotCell);
                         this.allShots.push(shotCell)
-                        console.log(this.salvo)
                     } else {
                         alert("3 shots fired!")
                     }
@@ -328,10 +321,9 @@ var main = new Vue({
                     this.salvo = this.salvo.filter(e => e !== shotCell);
                     this.allShots = this.allShots.filter(e => e !== shotCell);
                     document.getElementById("salvo " + shotCell).className = "salvoTable"
-                    console.log("delete shot")
                 }
             }
-        }
+        }}
     },
     created: function () {
         this.getDataObject(this.determineGamePlayer())
@@ -339,17 +331,14 @@ var main = new Vue({
 
 })
 
-
 function allowDrop(ev) {
     ev.preventDefault();
-
 }
 
 function drag(event) {
     if (main.placing) {
         event.dataTransfer.setData("text", event.target.id);
     }
-
 }
 
 function drop(event, el) {

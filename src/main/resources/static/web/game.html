@@ -69,9 +69,10 @@
                 <h3>Salvo's</h3>
                 <h3>{{usernames[0]}} vs. {{usernames[1]}}</h3>
 
-                <table class="table">
+                <table id="salvoTableTotal" class="table">
+                   
                     <tr>
-                        <th></th>
+                        <th><h2 v-if="notShooting" class="waitingMessage">Waiting for other player</h2></th>
                         <th v-for="column in columns"> {{column}} </th>
 
                     </tr>
@@ -87,7 +88,7 @@
             </div>
             <div class="rightSideButtons">
             <button @click="logout" class="button wide">Log out</button>
-            <button @click="sendSalvo" class="button wide" v-if="placing == false">Fire salvo!</button>
+            <button @click="sendSalvo" class="button wide" v-show="placing == false">Fire salvo!</button>
             <button @click="makeShipJSON" v-show="placing" class="button wide">Start Game</button>
             </div>
 
