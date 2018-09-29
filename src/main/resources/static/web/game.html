@@ -45,7 +45,7 @@
             </div>
     
             <div class="left-table">
-                <h3>Ship Locations</h3>
+                
                 <h3>{{usernames[0]}} vs. {{usernames[1]}}</h3>
 
                 <table class="table">
@@ -66,13 +66,13 @@
          
       
             <div class="right-table" v-show="placing == false">
-                <h3>Salvo's</h3>
+                
                 <h3>{{usernames[0]}} vs. {{usernames[1]}}</h3>
 
                 <table id="salvoTableTotal" class="table">
                    
                     <tr>
-                        <th><h2 v-if="notShooting" class="waitingMessage">Waiting for other player</h2></th>
+                        <th><h2 v-if="notShooting" class="waitingMessage">{{message}}</h2></th>
                         <th v-for="column in columns"> {{column}} </th>
 
                     </tr>

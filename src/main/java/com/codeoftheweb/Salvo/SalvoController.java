@@ -106,6 +106,10 @@ public class SalvoController {
         if (user.getPlayer().getId() == getCurrentUser(authentication).getId()) {
             Map<String, Object> gameView = new LinkedHashMap<>();
             gameView.put("game", makeGameDTO(user.getGame()));
+            gameView.put("usershiplocations", shipLocations(user));
+            gameView.put("usersalvolocations", salvoLocations(user));
+            gameView.put("enemyshiplocations", shipLocations(opponent));
+            gameView.put("enemysalvolocations", salvoLocations(opponent));
             gameView.put("ships", user.getShips()
                     .stream()
                     .map(thisShip -> makeShipDTO(thisShip))
@@ -221,17 +225,35 @@ public class SalvoController {
                 .stream().mapToInt(gameplayer -> gameplayer.getSalvoes().size()).max().orElse(-1);
         long firstPlayerId = game.getGamePlayers().stream().mapToLong(gamePlayer -> gamePlayer.getId()).min().orElse(-1);
         long secondPlayerId = game.getGamePlayers().stream().mapToLong(gamePlayer -> gamePlayer.getId()).max().orElse(-1);
-        boolean gameOver = false;
+        GamePlayer winner = new GamePlayer();
+        String winnerName = "none";
         GamePlayer gamePlayerToFire = new GamePlayer();
         if(leastSalvoes == mostSalvoes){gamePlayerToFire = gameplayerRepository.findOne(firstPlayerId);}else{
             gamePlayerToFire = gameplayerRepository.findOne(secondPlayerId);}
             if(leastSalvoes != 0){
-        if(getSunkShips(gameplayerRepository.findOne(firstPlayerId)).size() == 5 && leastSalvoes == mostSalvoes) {gameOver = true; }
-        if(getSunkShips(gameplayerRepository.findOne(secondPlayerId)).size() == 5 && leastSalvoes == mostSalvoes) {gameOver = true; }
+        if(getSunkShips(gameplayerRepository.findOne(firstPlayerId)).size() == 5 && leastSalvoes == mostSalvoes && game.getScores().size() == 0)
+        {winner = gameplayerRepository.findOne(secondPlayerId);
+            Score score = new Score(winner.getGame(), winner.getPlayer(),1.0 , winner.getGameDate());
+            scoreRepository.save(score);
+            winnerName = winner.getPlayer().getUserName();
+        }
+        if(getSunkShips(gameplayerRepository.findOne(secondPlayerId)).size() == 5 && leastSalvoes == mostSalvoes && game.getScores().size() == 0)
+        {winner = gameplayerRepository.findOne(firstPlayerId);
+            winner = gameplayerRepository.findOne(firstPlayerId);
+            Score score = new Score(winner.getGame(), winner.getPlayer(),1.0 , winner.getGameDate());
+            scoreRepository.save(score);
+            winnerName = winner.getPlayer().getUserName();
+        }
+        }
+        int allShips = 0;
+        if(game.gamePlayers.size() == 2){
+            allShips = gameplayerRepository.findOne(secondPlayerId).getShips().size() + gameplayerRepository.findOne(firstPlayerId).getShips().size();
         }
         dto.put("turn", leastSalvoes + 1);
         dto.put("playerToFire", gamePlayerToFire.getId());
-        dto.put("gameover", gameOver);
+        dto.put("shipsPlaced", allShips);
+        dto.put("winner", winnerName);
+
     return dto;
     }
 
@@ -290,9 +312,9 @@ public class SalvoController {
     private List<String> getHits(GamePlayer gamePlayer){
        GamePlayer opponent = gamePlayer.getGame().getGamePlayers()
                .stream().filter(gp -> gp != gamePlayer).findFirst().orElse(null);
-       return  salvoLocations(gamePlayer)
+       return  shipLocations(opponent)
                 .stream()
-                .filter(shot -> shipLocations(opponent)
+                .filter(shot -> salvoLocations(gamePlayer)
                         .stream()
                         .anyMatch(shiplocation -> shiplocation == shot)).collect(toList());
     }

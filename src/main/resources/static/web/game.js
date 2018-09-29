@@ -5,7 +5,9 @@ var main = new Vue({
         columns: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
         gameData: {},
         placing: true,
-        timer: "",
+        timer: setInterval(function () {}, 0),
+        message: "",
+        numberOfEnemySalvoes: 0,
         turn: 1,
         shipLocations: [],
         usernames: [],
@@ -65,36 +67,38 @@ var main = new Vue({
         onConversionToJsonSuccessful: function (json) {
             main.gameData = json;
             console.log(this.gameData)
-            console.log(this.gameData.gameview.game.gamestate.playerToFire.toString())
-            console.log(this.determineGamePlayer())
-            if (this.gameData.gameview.game.gamestate.playerToFire.toString() !== this.determineGamePlayer()) {
-                document.getElementById("salvoTableTotal").style.opacity = "0.5"
-                this.notShooting = true
-
-            } else if (this.gameData.gameview.game.gamestate.playerToFire.toString() == this.determineGamePlayer()) {
-                document.getElementById("salvoTableTotal").style.opacity = "1"
-                this.notShooting = false
-                clearTimeout(this.timer)
-            }
-            if (this.gameData.gameview.ships.length == 5) {
-                this.getShips()
-                this.getPlayers()
-                this.placing = false
-                if (this.gameData.gameview.usersalvoes != null) {
-                    this.getSalvoes(this.gameData.gameview.usersalvoes, this.gameData.gameview.userhits, "salvo ")
+            if (this.gameData.gameview.game.gamestate.winner == "none") {
+                if (this.gameData.gameview.ships.length >= 5) {
+                    this.getShips();
+                    this.getPlayers();
+                    if (this.gameData.gameview.usersalvoes != null) {
+                        this.getSalvoes(this.gameData.gameview.usersalvoes, this.gameData.gameview.userhits, "salvo ")
+                    }
+                    if (this.gameData.gameview.enemysalvoes != null) {
+                        this.getSalvoes(this.gameData.gameview.enemysalvoes, this.gameData.gameview.enemyhits, "ship ")
+                    }
+                    this.placing = false;
+                    if (this.gameData.gameview.game.gamestate.playerToFire.toString() != this.determineGamePlayer() ||
+                        this.gameData.gameview.game.gamestate.shipsPlaced != 10 || this.gameData.gameview.game.gameplayers.length != 2) {
+                        document.getElementById("salvoTableTotal").style.opacity = "0.5"
+                        this.notShooting = true
+                        this.message = "Waiting for other player"
+//                        clearInterval(this.timer)
+//                        this.checkServerForData()
+                    } else {
+                        document.getElementById("salvoTableTotal").style.opacity = "1"
+                        this.notShooting = false
+                        console.log("clear timer")
+                        clearInterval(this.timer)
+                    }
+                } else {
+                    this.placing = true;
                 }
-                if (this.gameData.gameview.enemysalvoes != null) {
-                    this.getSalvoes(this.gameData.gameview.enemysalvoes, this.gameData.gameview.enemyhits, "ship ")
-                };
-
-            } else if (
-                this.gameData.gameview.ships.length < 5) {
-                this.getShips()
-                this.placing = true;
-            } else {
-                this.placing = true;
+            } else if (this.gameData.gameview.game.gamestate.winner !== "none") {
+                clearInterval(this.timer)
+                this.notShooting = true
+                this.message = "Game Over!!"
             }
-
         },
         onDataFetched: function (response) {
             response.json()
@@ -104,6 +108,7 @@ var main = new Vue({
             this.timer = setInterval(function () {
                 main.getDataObject(main.determineGamePlayer())
             }, 2000)
+
         },
         determineGamePlayer: function () {
             var url = location.search;
@@ -147,57 +152,19 @@ var main = new Vue({
                                 elem.src = "animated-fire-image-0371.gif"
                                 cell.appendChild(elem)
                                 elem.className = "fire"
-
                             }
                         } else if (cell.childElementCount < 2) {
                             let elem = document.createElement("img");
-                            elem.src = "animated-fire-image-0371.gif"
+                            elem.src = "Webp.net-gifmaker.gif"
                             cell.appendChild(elem)
                             elem.className = "fire"
                         }
-
-                        //                        cell.firstChild.className == "normal" || cell.firstChild.className == "rotate"
+                    } else if (!shot == "") {
+                        cell.className = " miss"
                     }
                 }
             }
-
-            //
-            //
-            //            for (i = 0; i < salvoType.length; i++) {
-            //                for (j = 0; j < salvoType[i].location.length; j++) {
-            //                    let shot = salvotype[i].location[j];
-            //                    let cell = document.getElementById(grid + shot);
-            //                    if (shot != "" && salvotype == this.gameData.gameview.usersalvoes) {
-            //                        if (!this.gameData.gameview.userhits.includes(shot)) {
-            //                            cell.className = "salvoTable";
-            ////                            cell.className += " miss";
-            //                            
-            //                            
-            //                        } else if (cell.firstChild)  {if(cell.firstChild.className == "normal" || cell.firstChild.className == "rotate"){console.log("hoi")
-            //                            cell.className = "salvoTable";
-            //                            let elem = document.createElement("img");
-            //                            elem.className = "fire"
-            ////                            cell.className -= " miss";
-            //                            elem.src = "animated-fire-image-0371.gif"
-            //                            cell.appendChild(elem)
-            //                        }}
-            //                        this.allShots.push(shot)
-            //                    } else if (shot != "") {
-            ////                        cell.className += " miss";
-            //                    }; 
-            //                    for (var vessel in this.allShips) {
-            //                        locations = eval("this.allShips." + vessel + ".locations")
-            //                        if (locations.includes(shot) && salvotype == this.gameData.gameview.enemysalvoes && cell.firstChild) {
-            //                            cell.className = "shipTable";
-            //                            let elem = document.createElement("img");
-            //                            elem.className = "fire"
-            //                            elem.src = "animated-fire-image-0371.gif"
-            ////                            cell.className -= " miss";
-            //                            cell.appendChild(elem)
-            //                        }
-            //                    }
-            //                }
-            //            }
+            this.numberOfEnemySalvoes = this.gameData.gameview.enemysalvoes.length
         },
         getPlayers: function () {
             let players = this.gameData.gameview.game.gameplayers
@@ -332,7 +299,7 @@ var main = new Vue({
                     this.placing = false;
                     this.getDataObject(this.determineGamePlayer())
                     this.checkServerForData()
-                    //                    setInterval(this.getDataObject(this.determineGamePlayer()),5000)
+
                 })
         },
         sendSalvo: function () {
@@ -354,7 +321,6 @@ var main = new Vue({
                     .then(r => {
                         this.getDataObject(main.determineGamePlayer())
                         this.checkServerForData()
-                        //                        setInterval(this.getDataObject(this.determineGamePlayer()),5000);
                     })
             } else {
                 alert("please fire 3 shots")
@@ -382,8 +348,7 @@ var main = new Vue({
     },
     created: function () {
         this.getDataObject(this.determineGamePlayer())
-        this.checkServerForData()
-        //        this.getDataObject(this.determineGamePlayer())
+//        this.checkServerForData()
     }
 
 })
