@@ -72,7 +72,7 @@
                 <table id="salvoTableTotal" class="table">
                    
                     <tr>
-                        <th><h2 v-if="notShooting" class="waitingMessage">{{message}}</h2></th>
+                        <th><h2 v-if="shooting == false" class="waitingMessage">{{message}}</h2></th>
                         <th v-for="column in columns"> {{column}} </th>
 
                     </tr>

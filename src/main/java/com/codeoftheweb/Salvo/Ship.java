@@ -12,7 +12,7 @@ public class Ship {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String shipType;
-//    private boolean sunk;
+
 
     @ElementCollection
     private List<String> shipLocations;

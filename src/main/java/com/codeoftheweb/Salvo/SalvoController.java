@@ -99,27 +99,26 @@ public class SalvoController {
 
     @RequestMapping(path = "/game_view/{gamePlayerId}", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getGamePlayerData(@PathVariable Long gamePlayerId, Authentication authentication) {
-
         GamePlayer user = gameplayerRepository.findOne(gamePlayerId);
-        GamePlayer opponent = user.getGame().getGamePlayers().stream().filter(gp -> gp != user).findFirst().orElse(null);
-
+        GamePlayer opponent = getOpponent(user);
         if (user.getPlayer().getId() == getCurrentUser(authentication).getId()) {
             Map<String, Object> gameView = new LinkedHashMap<>();
             gameView.put("game", makeGameDTO(user.getGame()));
-            gameView.put("usershiplocations", shipLocations(user));
-            gameView.put("usersalvolocations", salvoLocations(user));
-            gameView.put("enemyshiplocations", shipLocations(opponent));
-            gameView.put("enemysalvolocations", salvoLocations(opponent));
             gameView.put("ships", user.getShips()
                     .stream()
                     .map(thisShip -> makeShipDTO(thisShip))
                     .collect(toList()));
+            if (user.getGame().getGamePlayers().size() == 2) {
             gameView.put("usersalvoes", getUserSalvos(user));
             gameView.put("userhits", getHits(user));
             gameView.put("usersinks", getSunkShips(user)
                     .stream()
                     .map(ship -> ship.getShipType())
-                    .collect(toList()));
+                    .collect(toList()));}else{
+                gameView.put("usersalvoes", null);
+                gameView.put("userhits", null);
+                gameView.put("usersinks", null);
+            }
             if (user.getGame().getGamePlayers().size() == 2) {
                 gameView.put("enemysalvoes", getEnemySalvos(user));
                 gameView.put("enemyhits", getHits(opponent));
@@ -169,7 +168,7 @@ public class SalvoController {
             if (gamePlayer != null && salvo.getSalvoLocations().size() == 10 && salvoRepository.findAll().stream().filter(salvorep -> salvorep.getTurn() == salvo.getTurn() && salvorep.getGamePlayer() == gamePlayer ).findFirst().orElse(null) == null) {
             salvo.setGamePlayer(gamePlayer);
                 salvoRepository.save(salvo);
-                System.out.println();
+                System.out.println(salvo.getSalvoLocations());
             return new ResponseEntity("created", HttpStatus.CREATED);
             }
          else {   return new ResponseEntity(makeMap("error", "Forbidden"), HttpStatus.FORBIDDEN);
@@ -190,14 +189,13 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("shipType", ship.getShipType());
         dto.put("shipLocations", ship.getShipLocations());
-        dto.put("sunk", getSinks(ship));
+        if(ship.getGamePlayer().getGame().getGamePlayers().size() == 2){
+        dto.put("sunk", getSinks(ship));}
         return dto;
     }
 
     public Map<String, Object> makeSalvoDTO(Salvo salvo) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        GamePlayer user = salvo.getGamePlayer();
-        GamePlayer opponent = user.getGame().getGamePlayers().stream().filter(gp -> gp != user).findFirst().orElse(null);
         dto.put("turn", salvo.getTurn());
         dto.put("location", salvo.getSalvoLocations());
         return dto;
@@ -218,43 +216,50 @@ public class SalvoController {
     }
 
     public Map<String, Object> getGameState(Game game){
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        int leastSalvoes = game.getGamePlayers()
-                .stream().mapToInt(gameplayer -> gameplayer.getSalvoes().size()).min().orElse(-1);
-        int mostSalvoes = game.getGamePlayers()
-                .stream().mapToInt(gameplayer -> gameplayer.getSalvoes().size()).max().orElse(-1);
-        long firstPlayerId = game.getGamePlayers().stream().mapToLong(gamePlayer -> gamePlayer.getId()).min().orElse(-1);
-        long secondPlayerId = game.getGamePlayers().stream().mapToLong(gamePlayer -> gamePlayer.getId()).max().orElse(-1);
-        GamePlayer winner = new GamePlayer();
-        String winnerName = "none";
-        GamePlayer gamePlayerToFire = new GamePlayer();
-        if(leastSalvoes == mostSalvoes){gamePlayerToFire = gameplayerRepository.findOne(firstPlayerId);}else{
-            gamePlayerToFire = gameplayerRepository.findOne(secondPlayerId);}
-            if(leastSalvoes != 0){
-        if(getSunkShips(gameplayerRepository.findOne(firstPlayerId)).size() == 5 && leastSalvoes == mostSalvoes && game.getScores().size() == 0)
-        {winner = gameplayerRepository.findOne(secondPlayerId);
-            Score score = new Score(winner.getGame(), winner.getPlayer(),1.0 , winner.getGameDate());
-            scoreRepository.save(score);
-            winnerName = winner.getPlayer().getUserName();
-        }
-        if(getSunkShips(gameplayerRepository.findOne(secondPlayerId)).size() == 5 && leastSalvoes == mostSalvoes && game.getScores().size() == 0)
-        {winner = gameplayerRepository.findOne(firstPlayerId);
-            winner = gameplayerRepository.findOne(firstPlayerId);
-            Score score = new Score(winner.getGame(), winner.getPlayer(),1.0 , winner.getGameDate());
-            scoreRepository.save(score);
-            winnerName = winner.getPlayer().getUserName();
-        }
-        }
-        int allShips = 0;
-        if(game.gamePlayers.size() == 2){
-            allShips = gameplayerRepository.findOne(secondPlayerId).getShips().size() + gameplayerRepository.findOne(firstPlayerId).getShips().size();
-        }
-        dto.put("turn", leastSalvoes + 1);
-        dto.put("playerToFire", gamePlayerToFire.getId());
-        dto.put("shipsPlaced", allShips);
-        dto.put("winner", winnerName);
+         Map<String, Object> dto = new LinkedHashMap<String, Object>();
+            if(game.getGamePlayers().size() == 2 && game.getGamePlayers()
+                    .stream().mapToInt(gp -> gp.getShips().size()).sum() == 10){
+                int leastSalvoes = game.getGamePlayers()
+                        .stream().mapToInt(gameplayer -> gameplayer.getSalvoes().size()).min().orElse(-1);
 
-    return dto;
+            int mostSalvoes = game.getGamePlayers()
+                    .stream().mapToInt(gameplayer -> gameplayer.getSalvoes().size()).max().orElse(-1);
+            GamePlayer firstPlayer = gameplayerRepository.findOne(game.getGamePlayers().stream().mapToLong(gamePlayer -> gamePlayer.getId()).min().orElse(-1));
+            GamePlayer secondPlayer = gameplayerRepository.findOne(game.getGamePlayers().stream().mapToLong(gamePlayer -> gamePlayer.getId()).max().orElse(-1));
+            GamePlayer winner = new GamePlayer();
+            String winnerName = "none";
+            GamePlayer gamePlayerToFire = new GamePlayer();
+            if (leastSalvoes == mostSalvoes) {
+                gamePlayerToFire = firstPlayer;
+            } else {
+                gamePlayerToFire = secondPlayer;
+            }
+            if (leastSalvoes != 0) {
+                if (getSunkShips(firstPlayer).size() == 5 && leastSalvoes == mostSalvoes && game.getScores().size() == 0) {
+                    winner = secondPlayer;
+                    Score score = new Score(winner.getGame(), winner.getPlayer(), 1.0, winner.getGameDate());
+                    scoreRepository.save(score);
+                    winnerName = winner.getPlayer().getUserName();
+                }
+                if (getSunkShips(secondPlayer).size() == 5 && leastSalvoes == mostSalvoes && game.getScores().size() == 0) {
+                    winner = firstPlayer;
+                    Score score = new Score(winner.getGame(), winner.getPlayer(), 1.0, winner.getGameDate());
+                    scoreRepository.save(score);
+                    winnerName = winner.getPlayer().getUserName();
+                }
+            }
+            int allShips = 0;
+            if (game.gamePlayers.size() == 2) {
+                allShips = secondPlayer.getShips().size() + firstPlayer.getShips().size();
+            }
+            dto.put("turn", leastSalvoes + 1);
+            dto.put("playerToFire", gamePlayerToFire.getId());
+            dto.put("winner", winnerName);
+
+            }
+            else{
+            dto.put("state", "waiting for second player");}
+            return dto;
     }
 
     public Object getUserSalvos(GamePlayer gamePlayer){
@@ -310,18 +315,15 @@ public class SalvoController {
     }
 
     private List<String> getHits(GamePlayer gamePlayer){
-       GamePlayer opponent = gamePlayer.getGame().getGamePlayers()
-               .stream().filter(gp -> gp != gamePlayer).findFirst().orElse(null);
-       return  shipLocations(opponent)
+       GamePlayer opponent = getOpponent(gamePlayer);
+        return shipLocations(opponent)
                 .stream()
-                .filter(shot -> salvoLocations(gamePlayer)
-                        .stream()
-                        .anyMatch(shiplocation -> shiplocation == shot)).collect(toList());
+                .filter(cell -> salvoLocations(gamePlayer).contains(cell))
+                .collect(toList());
     }
 
     private boolean getSinks(Ship ship){
-        GamePlayer opponent = ship.getGamePlayer().getGame().getGamePlayers()
-                .stream().filter(gp -> gp != ship.getGamePlayer()).findFirst().orElse(null);
+        GamePlayer opponent = getOpponent(ship.getGamePlayer());
         return ship.getShipLocations()
                         .stream()
                         .allMatch(location -> getHits(opponent)
@@ -343,6 +345,10 @@ public class SalvoController {
                 .map(salvo -> makeSalvoDTO(salvo))
                 .collect(toList());
     }
+
+    private GamePlayer getOpponent(GamePlayer gamePlayer){
+    return gamePlayer.getGame().getGamePlayers()
+            .stream().filter(gp -> gp != gamePlayer).findFirst().orElse(null);}
 
     private Map<String, Object> makeMap(String key, Object value) {
         Map<String, Object> map = new HashMap<>();

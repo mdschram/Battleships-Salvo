@@ -15,7 +15,7 @@ var main = new Vue({
         allShots: [],
         locations: [],
         allowed: true,
-        notShooting: false,
+        shooting: true,
         currentShip: [],
         allShips: {
             containership: {
@@ -67,55 +67,64 @@ var main = new Vue({
         onConversionToJsonSuccessful: function (json) {
             main.gameData = json;
             console.log(this.gameData)
-            if (this.gameData.gameview.game.gamestate.winner == "none") {
-                if (this.gameData.gameview.ships.length >= 5) {
-                    this.getShips();
-                    this.getPlayers();
-                    if (this.gameData.gameview.usersalvoes != null) {
-                        this.getSalvoes(this.gameData.gameview.usersalvoes, this.gameData.gameview.userhits, "salvo ")
-                    }
-                    if (this.gameData.gameview.enemysalvoes != null) {
-                        this.getSalvoes(this.gameData.gameview.enemysalvoes, this.gameData.gameview.enemyhits, "ship ")
-                    }
-                    this.placing = false;
-                    if (this.gameData.gameview.game.gamestate.playerToFire.toString() != this.determineGamePlayer() ||
-                        this.gameData.gameview.game.gamestate.shipsPlaced != 10 || this.gameData.gameview.game.gameplayers.length != 2) {
-                        document.getElementById("salvoTableTotal").style.opacity = "0.5"
-                        this.notShooting = true
-                        this.message = "Waiting for other player"
-//                        clearInterval(this.timer)
-//                        this.checkServerForData()
-                    } else {
-                        document.getElementById("salvoTableTotal").style.opacity = "1"
-                        this.notShooting = false
-                        console.log("clear timer")
-                        clearInterval(this.timer)
-                    }
-                } else {
-                    this.placing = true;
-                }
-            } else if (this.gameData.gameview.game.gamestate.winner !== "none") {
-                clearInterval(this.timer)
-                this.notShooting = true
-                this.message = "Game Over!!"
+            if (this.gameData.gameview.game.gamestate.state !== "waiting for second player" && this.gameData.gameview.game.gamestate.playerToFire.toString() == this.determineGamePlayer()) {
+                this.getShips();
+                this.getPlayers();
+                this.placing = false;
+                this.StopCheckForServerData()
+
+            } else if (this.shooting == true) {
+                this.StartCheckServerForData()
+            } else if (this.gameData.gameview.game.gamestate.winner !== "none" && this.gameData.gameview.game.gamestate.state !== "waiting for second player") {
+                this.gameOver()
             }
+            if (this.gameData.gameview.usersalvoes != null) {
+                this.getSalvoes(this.gameData.gameview.usersalvoes, this.gameData.gameview.userhits, "salvo ")
+            }
+            if (this.gameData.gameview.enemysalvoes != null) {
+                this.getSalvoes(this.gameData.gameview.enemysalvoes, this.gameData.gameview.enemyhits, "ship ")
+            }
+
         },
         onDataFetched: function (response) {
             response.json()
                 .then(this.onConversionToJsonSuccessful)
         },
-        checkServerForData: function () {
+        StartCheckServerForData: function () {
             this.timer = setInterval(function () {
                 main.getDataObject(main.determineGamePlayer())
             }, 2000)
-
+            this.waitingForOtherPlayer()
         },
+        StopCheckForServerData: function () {
+            clearInterval(this.timer)
+            this.playerToFire()
+        },
+
         determineGamePlayer: function () {
             var url = location.search;
             var x = url.split('=')[1];
             this.gamePlayer = x;
             return this.gamePlayer
         },
+        waitingForOtherPlayer: function () {
+            document.getElementById("salvoTableTotal").style.opacity = "0.5"
+            this.shooting = false
+            this.message = "Waiting for other player"
+        },
+        playerToFire: function () {
+            document.getElementById("salvoTableTotal").style.opacity = "1"
+            this.shooting = true
+            clearInterval(this.timer)
+            console.log("clear timer");
+
+        },
+        gameOver: function () {
+            document.getElementById("salvoTableTotal").style.opacity = "0.5"
+            this.shooting = false
+            this.message = "Game Over!!" + this.gameData.gameview.game.gamestate.winner + "Wins!"
+        },
+
         getShips: function () {
             for (i = 0; i < this.gameData.gameview.ships.length; i++) {
                 let ship = this.gameData.gameview.ships
@@ -298,7 +307,7 @@ var main = new Vue({
                 .then(r => {
                     this.placing = false;
                     this.getDataObject(this.determineGamePlayer())
-                    this.checkServerForData()
+                    //                    this.checkServerForData()
 
                 })
         },
@@ -320,7 +329,7 @@ var main = new Vue({
                     .then(this.salvo = [])
                     .then(r => {
                         this.getDataObject(main.determineGamePlayer())
-                        this.checkServerForData()
+                        //                        this.checkServerForData()
                     })
             } else {
                 alert("please fire 3 shots")
@@ -348,9 +357,7 @@ var main = new Vue({
     },
     created: function () {
         this.getDataObject(this.determineGamePlayer())
-//        this.checkServerForData()
     }
-
 })
 
 function allowDrop(ev) {
