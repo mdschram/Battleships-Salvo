@@ -26,11 +26,11 @@ public class Score {
     @JoinColumn(name="game_id")
     private Game game;
 
-    public Score (Game game, Player player, Double score, Date finishDate) {
+    public Score (Game game, Player player, Double score) {
        this.game = game;
        this.player = player;
        this.score = score;
-       this.finishDate = finishDate;
+
     }
 
     public Long getId1() {

@@ -5,6 +5,7 @@ var main = new Vue({
         columns: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
         gameData: {},
         placing: true,
+        gameOver: false,
         timer: setInterval(function () {}, 0),
         message: "",
         numberOfEnemySalvoes: 0,
@@ -67,7 +68,10 @@ var main = new Vue({
         onConversionToJsonSuccessful: function (json) {
             main.gameData = json;
             console.log(this.gameData)
-            if (this.gameData.gameview.game.gamestate.state !== "waiting for second player" && this.gameData.gameview.game.gamestate.playerToFire.toString() == this.determineGamePlayer()) {
+            if (this.gameData.gameview.gamestate.gameOver == true) {
+                this.gameOver()
+            }
+            if (this.gameData.gameview.gamestate.state !== "waiting for second player" && this.gameData.gameview.gamestate.playerToFire.toString() == this.determineGamePlayer() && this.gameOver !== true) {
                 this.getShips();
                 this.getPlayers();
                 this.placing = false;
@@ -75,8 +79,6 @@ var main = new Vue({
 
             } else if (this.shooting == true) {
                 this.StartCheckServerForData()
-            } else if (this.gameData.gameview.game.gamestate.winner !== "none" && this.gameData.gameview.game.gamestate.state !== "waiting for second player") {
-                this.gameOver()
             }
             if (this.gameData.gameview.usersalvoes != null) {
                 this.getSalvoes(this.gameData.gameview.usersalvoes, this.gameData.gameview.userhits, "salvo ")
@@ -122,7 +124,15 @@ var main = new Vue({
         gameOver: function () {
             document.getElementById("salvoTableTotal").style.opacity = "0.5"
             this.shooting = false
-            this.message = "Game Over!!" + this.gameData.gameview.game.gamestate.winner + "Wins!"
+            this.gameOver = true
+            clearInterval(this.timer)
+            if (this.gameData.gameview.gamestate.winner == this.determineGamePlayer()) {
+                this.message = "Game Over!! You Win!!"
+            } else if (this.gameData.gameview.gamestate.winner == "tie") {
+                this.message = "Game Over!! It's a tie!"
+            } else {
+                this.message = "Game Over!! You Lose!!"
+            }
         },
 
         getShips: function () {
@@ -314,7 +324,7 @@ var main = new Vue({
         sendSalvo: function () {
             if (this.salvo.length == 10) {
                 salvo = {
-                    turn: this.gameData.gameview.game.gamestate.turn,
+                    turn: this.gameData.gameview.gamestate.turn,
                     salvoLocations: this.salvo
                 }
                 fetch("/api/games/players/" + this.determineGamePlayer() + "/salvos", {
@@ -336,7 +346,7 @@ var main = new Vue({
             }
         },
         placeShot: function (shotCell) {
-            if (this.gameData.gameview.game.gamestate.playerToFire.toString() == this.determineGamePlayer()) {
+            if (this.gameData.gameview.gamestate.playerToFire.toString() == this.determineGamePlayer()) {
                 if (!this.allShots.includes(shotCell) || this.salvo.includes(shotCell)) {
                     if (!this.salvo.includes(shotCell)) {
                         if (this.salvo.length < 10) {

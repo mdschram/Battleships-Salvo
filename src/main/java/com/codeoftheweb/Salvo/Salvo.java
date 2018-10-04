@@ -49,6 +49,7 @@ public class Salvo {
 
     public GamePlayer getGamePlayer() {
         return gamePlayer;
+
     }
 
     public void setGamePlayer(GamePlayer gamePlayer) {

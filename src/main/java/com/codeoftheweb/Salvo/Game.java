@@ -16,6 +16,7 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private Date gameDate;
+    private Boolean gameOver;
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
@@ -31,6 +32,14 @@ public class Game {
         public Game() {
     }
 
+    public Boolean getGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(Boolean gameOver) {
+            this.gameOver = gameOver;
+    }
+
     public long getId() {
         return id;
     }
@@ -39,8 +48,9 @@ public class Game {
         this.id = id;
     }
 
-    public Game(Date date) {
+    public Game(Date date, Boolean gameOver) {
             this.gameDate = date;
+            this.gameOver = gameOver;
     }
 
     public Date getDate() {
