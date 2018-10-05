@@ -326,7 +326,7 @@ var main = new Vue({
                 })
         },
         sendSalvo: function () {
-            if (this.salvo.length == 10) {
+            if (this.salvo.length == 5) {
                 salvo = {
                     turn: this.gameData.gameview.gamestate.turn,
                     salvoLocations: this.salvo
@@ -345,19 +345,19 @@ var main = new Vue({
                         this.getDataObject(main.determineGamePlayer())
                     })
             } else {
-                alert("please fire 3 shots")
+                alert("please fire 5 shots")
             }
         },
         placeShot: function (shotCell) {
             if (this.gameData.gameview.gamestate.playerToFire.toString() == this.determineGamePlayer()) {
                 if (!this.allShots.includes(shotCell) || this.salvo.includes(shotCell)) {
                     if (!this.salvo.includes(shotCell)) {
-                        if (this.salvo.length < 10) {
+                        if (this.salvo.length < 5) {
                             document.getElementById("salvo " + shotCell).className += " shot"
                             this.salvo.push(shotCell);
                             this.allShots.push(shotCell)
                         } else {
-                            alert("3 shots fired!")
+                            alert("5 shots fired!")
                         }
                     } else {
                         this.salvo = this.salvo.filter(e => e !== shotCell);

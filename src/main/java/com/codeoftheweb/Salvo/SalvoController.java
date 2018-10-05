@@ -167,7 +167,7 @@ public class SalvoController {
                                                @RequestBody Salvo salvo) {
         GamePlayer gamePlayer = gameplayerRepository.findOne(gamePlayerId);
         if (gamePlayer.getPlayer().getId() == getCurrentUser(authentication).getId() || getCurrentUser(authentication) != null) {
-            if (gamePlayer != null && salvo.getSalvoLocations().size() == 10 && salvoRepository.findAll().stream().filter(salvorep -> salvorep.getTurn() == salvo.getTurn() && salvorep.getGamePlayer() == gamePlayer ).findFirst().orElse(null) == null) {
+            if (gamePlayer != null && salvo.getSalvoLocations().size() == 5 && salvoRepository.findAll().stream().filter(salvorep -> salvorep.getTurn() == salvo.getTurn() && salvorep.getGamePlayer() == gamePlayer ).findFirst().orElse(null) == null) {
             salvo.setGamePlayer(gamePlayer);
                 salvoRepository.save(salvo);
                 return new ResponseEntity("created", HttpStatus.CREATED);
