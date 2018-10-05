@@ -237,8 +237,8 @@ public class SalvoController {
             }
             if (game.getGamePlayers().stream()
                     .filter(gamePlayer -> getSunkShips(gamePlayer).size() == 5)
-                    .findFirst().orElse(null) != null
-                    && game.getGameOver() == false)  {
+                    .findFirst().orElse(null) != null)
+                      {
                winnerName = getWinner(game, leastSalvoes == mostSalvoes);
             }
             dto.put("turn", leastSalvoes + 1);
@@ -259,21 +259,30 @@ public class SalvoController {
     if (getSunkShips(getOpponent(loser)).size() == 5 && sameTurn == true ){
         Score losing = new Score(loser.getGame(), loser.getPlayer(), 0.5);
         Score winning = new Score(winner.getGame(), winner.getPlayer(), 0.5);
-        scoreRepository.save(winning);
-        scoreRepository.save(losing);
-        gameRepository.findOne(game.getId()).setGameOver(true);
+        if(game.getGameOver() == false){
+        saveScores(winning);
+        saveScores(losing);}
+        game.setGameOver(true);
+        gameRepository.save(game);
         return "tie";
-    }else if(sameTurn == true) {
-    Score winning = new Score(winner.getGame(), winner.getPlayer(), 1.0);
-    scoreRepository.save(winning);
-    gameRepository.findOne(game.getId()).setGameOver(true);
-    game.setGameOver(true);
-    return String.valueOf(winner.getId());}
-    else return "none";
+        }else if(sameTurn == true) {
+            Score winning = new Score(winner.getGame(), winner.getPlayer(), 1.0);
+        if(game.getGameOver() == false){
+            saveScores(winning);}
+            game.setGameOver(true);
+            gameRepository.save(game);
+            return String.valueOf(winner.getId());}
+        else return "none, but tried";
 
         }
 
     catch(Exception exc) {return "none";}
+
+    }
+
+    public void saveScores(Score score){
+
+        scoreRepository.save(score);
 
     }
 

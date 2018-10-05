@@ -69,12 +69,13 @@ var main = new Vue({
             main.gameData = json;
             console.log(this.gameData)
             if (this.gameData.gameview.gamestate.gameOver == true) {
+                this.placing = false
                 this.gameOver()
+
             }
             if (this.gameData.gameview.gamestate.state !== "waiting for second player" && this.gameData.gameview.gamestate.playerToFire.toString() == this.determineGamePlayer() && this.gameOver !== true) {
                 this.getShips();
                 this.getPlayers();
-                this.placing = false;
                 this.StopCheckForServerData()
 
             } else if (this.shooting == true) {
@@ -116,13 +117,13 @@ var main = new Vue({
         },
         playerToFire: function () {
             document.getElementById("salvoTableTotal").style.opacity = "1"
-            this.shooting = true
-            clearInterval(this.timer)
+            this.shooting = true;
+            clearInterval(this.timer);
             console.log("clear timer");
-
         },
         gameOver: function () {
             document.getElementById("salvoTableTotal").style.opacity = "0.5"
+//            this.getDataObject(this.determineGamePlayer());
             this.shooting = false
             this.gameOver = true
             clearInterval(this.timer)
@@ -317,8 +318,6 @@ var main = new Vue({
                 .then(r => {
                     this.placing = false;
                     this.getDataObject(this.determineGamePlayer())
-                    //                    this.checkServerForData()
-
                 })
         },
         sendSalvo: function () {
@@ -339,7 +338,6 @@ var main = new Vue({
                     .then(this.salvo = [])
                     .then(r => {
                         this.getDataObject(main.determineGamePlayer())
-                        //                        this.checkServerForData()
                     })
             } else {
                 alert("please fire 3 shots")
