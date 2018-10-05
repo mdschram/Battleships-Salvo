@@ -68,16 +68,22 @@ var main = new Vue({
         onConversionToJsonSuccessful: function (json) {
             main.gameData = json;
             console.log(this.gameData)
+            this.getShips();
+                this.getPlayers();
+            if (this.gameData.gameview.ships.length !== 5) {
+                this.placing = true
+            } else {
+                this.placing = false
+            }
             if (this.gameData.gameview.gamestate.gameOver == true) {
                 this.placing = false
                 this.gameOver()
 
             }
             if (this.gameData.gameview.gamestate.state !== "waiting for second player" && this.gameData.gameview.gamestate.playerToFire.toString() == this.determineGamePlayer() && this.gameOver !== true) {
+                this.StopCheckForServerData()
                 this.getShips();
                 this.getPlayers();
-                this.StopCheckForServerData()
-
             } else if (this.shooting == true) {
                 this.StartCheckServerForData()
             }
@@ -123,7 +129,6 @@ var main = new Vue({
         },
         gameOver: function () {
             document.getElementById("salvoTableTotal").style.opacity = "0.5"
-//            this.getDataObject(this.determineGamePlayer());
             this.shooting = false
             this.gameOver = true
             clearInterval(this.timer)
