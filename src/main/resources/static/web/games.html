@@ -5,64 +5,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.5/vue.js"></script>
-    <link rel="stylesheet" href="style.css" type="text/css">
+    <link rel="stylesheet" href="lobbystyle.css" type="text/css">
     <title> Games </title>
 </head>
 
 <body>
 
-    <h1>Salvo Games!!!</h1>
+    <h1>Game Lobby</h1>
 
     <div id="main">
-       <div class="loginAndScores">
-        <div id="formAndButtons">
-           <div class="inputs">
-            <label>Name: <input id="username" type="text" name="username"></label>
-            <label>Password: <input id="password" type="text" name="password"></label>
+            <div id="formAndButtons">
+                
+               <div id="loginBox">
+                <div class="inputs">
+                    <label><input class="form-control input-lg" id="username" type="text" name="username" placeholder="Username"></label>
+                    <label><input class="form-control input-lg" id="password" type="text" name="password" placeholder="Password"></label>
+                </div>
+                <div class="loginButtons">
+                    <button @click="logout" v-if="userLoggedIn" class="btn btn-primary btn-lg">Log Out</button>
+                    <button @click="login" v-else class="btn btn-primary btn-lg">Log In</button>
+                    <button @click="createPlayer" v-if="userLoggedIn == false" class="btn btn-primary btn-lg">Sign Up</button>
+                    <button @click="createGame" class="btn btn-primary btn-lg" v-if="userLoggedIn">Create Game</button>
+                </div>
+                 </div>
             </div>
-            <div class="loginButtons">
-            <button @click="logout" v-if="userLoggedIn" class="button wide">Log out</button>
-            <button @click="login" v-else class="button wide">Log in</button>
-            <button @click="createPlayer" v-if="userLoggedIn == false" class="button wide">Create Player</button>
-            <button @click="createGame" class="button wide" v-if="userLoggedIn">Create game</button>
-            </div>
-        </div>
-        <div class="scores">
-        <h1>Scores</h1>
-        <table class="scoretable">
-            <thead>
-                <th>Player</th>
-                <th class="scoreCell">Wins</th>
-                <th class="scoreCell">Losses</th>
-                <th class="scoreCell" >Ties</th>
-                <th class="scoreCell">Total Score</th>
-            </thead>
-            <tbody>
-                <tr v-for="player in scoreData">
-                    <td class="scoreCell">{{player.player}}</td>
-                    <td class="scoreCell">{{player.wins}}</td>
-                    <td class="scoreCell">{{player.losses}}</td>
-                    <td class="scoreCell">{{player.ties}}</td>
-                    <td class="scoreCell">{{player.totalscore}}</td>
+            <div id="scoresAndGames">
+                
+                <div id="scores"> 
+                    <img id="shipImage" src="imageedit_12_6839689742.png">  
+
+                <h1>Scores</h1>
+                <table class="table table-striped table-dark">
+                    <thead>
+                        <th>Player</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Ties</th>
+                        <th>Total Score</th>
+                    </thead>
+                    <tbody>
+                        <tr v-for="player in scoreData">
+                            <td>{{player.player}}</td>
+                            <td>{{player.wins}}</td>
+                            <td>{{player.losses}}</td>
+                            <td>{{player.ties}}</td>
+                            <td>{{player.totalscore}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            
+    
+        
+        <div id="games"> 
+        <img id="shipImage2" src="imageedit_13_5722400601.png">
+        <h1>Games</h1>
+        <div id="gameContainer">
+           
+            <table class="table table-striped table-dark">
+                <tr>
+                    <td>Player 1</td>
+                    <td>Player 2</td>
+                    <td> </td>
                 </tr>
-            </tbody>
-        </table>
-        </div>
-        </div>
-        <div class="gamesList">
-        <ul>
-            <div v-for="game in gamesList" class="game"><a>
-    {{ game.player1}} vs {{game.player2}}</a><button v-if="game.gameLink != 0" @click="goToGamePage(game.gameLink)">Open</button> <button @click="joinGame(game.game)" v-if="game.numberOfPlayers <2 && userLoggedIn && game.player1 != gameData.player.username ">Join</button></div>
+                <tr v-for="game in gamesList">
+                    <td>{{ game.player1}} </td>
+                    <td>{{game.player2}}</td>
+                    <button v-if="game.gameLink != 0" @click="goToGamePage(game.gameLink)">Open</button> <button  @click="joinGame(game.game)" v-if="game.numberOfPlayers <2 && userLoggedIn && game.player1 != gameData.player.username ">Join</button></tr>
 
 
-        </ul>
+            </table>
         </div>
-
+        </div>
+</div>
     </div>
     <script src="./script/games.js"></script>
 </body>

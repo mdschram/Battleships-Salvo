@@ -171,6 +171,8 @@ var main = new Vue({
                     let shot = salvoType[i].location[j];
                     let cell = document.getElementById(grid + shot);
                     if (hitType.includes(shot)) {
+                        cell.className += " hit";
+                        cell.style.backgroundColor = "yellow"
                         if (cell.firstChild && cell.childElementCount < 2) {
                             if (cell.firstChild.className == "rotate" || cell.firstChild.className == "normal") {
                                 let elem = document.createElement("img");

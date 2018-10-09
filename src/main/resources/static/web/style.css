@@ -258,6 +258,27 @@ overflow-X: hidden;
     overflow-Y: scroll;
 }
 
+tr{background-image: none;
+    width: 100%
+}
+
+td.gamesColumn{
+   width: 40%;
+    background-image: none
+     
+}
+
+table{background-image: none}
+
+td.thirdGamesColumn{
+    width: 20%;
+    background-image: none
+}
+
+.gamesTable{background-image: none;
+    width: 100%
+}
+
 .loginAndScores{width: 50%;
 margin-left: 20px}
 
@@ -292,10 +313,12 @@ margin-right: 20px}
 
 ul{font-family: Arial, Helvetica, sans-serif;}
 
+/*
 .game{height: 60px;
 display: flex;
 justify-content: space-between;
 border-bottom:solid 1px black;}
+*/
 
 button {
     -moz-box-shadow: inset 0px 1px 0px 0px #cf866c;
