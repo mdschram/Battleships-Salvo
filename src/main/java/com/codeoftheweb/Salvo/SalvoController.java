@@ -217,8 +217,7 @@ public class SalvoController {
     }
 
     public Map<String, Object> getGameState(Game game){
-        System.out.println(game.getGameOver());
-         Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
             if(game.getGamePlayers().size() == 2 && game.getGamePlayers()
                     .stream().mapToInt(gp -> gp.getShips().size()).sum() == 10){
                 int leastSalvoes = game.getGamePlayers()
@@ -252,8 +251,7 @@ public class SalvoController {
     }
 
     private String getWinner(Game game, Boolean sameTurn){
-        System.out.println("getting winner");
-        try{
+      try{
     GamePlayer loser = game.getGamePlayers().stream().filter(gamePlayer -> getSunkShips(gamePlayer).size() == 5).findFirst().orElse(null);
     GamePlayer winner = getOpponent(loser);
     if (getSunkShips(getOpponent(loser)).size() == 5 && sameTurn == true ){

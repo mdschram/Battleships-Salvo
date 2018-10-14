@@ -68,17 +68,19 @@
         <img id="shipImage2" src="imageedit_13_5722400601.png">
         <h1>Games</h1>
         <div id="gameContainer">
-           
             <table class="table table-striped table-dark">
                 <tr>
                     <td>Player 1</td>
+                    <td></td>
                     <td>Player 2</td>
                     <td> </td>
                 </tr>
                 <tr v-for="game in gamesList">
                     <td>{{ game.player1}} </td>
+                    <td class="versus">vs</td>
                     <td>{{game.player2}}</td>
-                    <button v-if="game.gameLink != 0" @click="goToGamePage(game.gameLink)">Open</button> <button  @click="joinGame(game.game)" v-if="game.numberOfPlayers <2 && userLoggedIn && game.player1 != gameData.player.username ">Join</button></tr>
+                    <td class="gameButton">
+                    <button v-show="game.gameLink != 0" @click="goToGamePage(game.gameLink)">Open</button> <button  @click="joinGame(game.game)" v-show="game.numberOfPlayers <2 && userLoggedIn && game.player1 != gameData.player.username ">Join</button></td></tr>
 
 
             </table>

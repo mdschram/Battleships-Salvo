@@ -25,12 +25,12 @@ body {
     justify-content: space-around;
     margin-top: 20px;
     height: 115%;
-    
+
 }
 
 
 #gameContainer,
-#scoreContainer{
+#scoreContainer {
     background-color: black;
     opacity: 0.8;
     width: 100%;
@@ -46,7 +46,6 @@ body {
     width: 45%;
     position: relative;
     height: 100%
-   
 }
 
 #scores {
@@ -55,6 +54,20 @@ body {
     width: 45%;
     position: relative;
     height: 100%
+}
+
+
+.versus {
+    5%
+}
+
+.gameButton {
+    width: 15%
+}
+
+
+td {
+    width: 35%
 }
 
 
@@ -87,6 +100,7 @@ body {
     flex-direction: column;
 }
 
+
 #loginBox {
     display: flex;
     flex-direction: row;
@@ -95,7 +109,7 @@ body {
 }
 
 #formAndButtons {
-  
+
     height: 30%;
     display: flex;
     flex-direction: row;
