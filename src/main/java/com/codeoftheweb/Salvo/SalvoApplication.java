@@ -60,10 +60,10 @@ public class SalvoApplication {
 				gameRepository.save(game2);
 				gameRepository.save(game3);
 				gameRepository.save(game4);
-//				gameRepository.save(game5);
+				gameRepository.save(game5);
 //				gameRepository.save(game6);
 //				gameRepository.save(game7);
-//				gameRepository.save(game8);
+				gameRepository.save(game8);
 
 				Player player1 = new Player("Michiel de Ruyter", "24");
 				Player player2 = new Player("Cornelis Tromp", "24");
