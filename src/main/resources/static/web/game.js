@@ -50,7 +50,6 @@ var main = new Vue({
     methods: {
 
         getDataObject: function (gamePlayer) {
-            console.log("fetching")
             var fetchConfig =
                 fetch("/api/game_view/" + gamePlayer, {
                     method: "GET",
@@ -67,7 +66,6 @@ var main = new Vue({
         },
         onConversionToJsonSuccessful: function (json) {
             main.gameData = json;
-            console.log(this.gameData)
             this.getShips();
                 this.getPlayers();
             if (this.gameData.gameview.ships.length !== 5) {
@@ -125,7 +123,6 @@ var main = new Vue({
             document.getElementById("salvoTableTotal").style.opacity = "1"
             this.shooting = true;
             clearInterval(this.timer);
-            console.log("clear timer");
         },
         gameOver: function () {
             document.getElementById("salvoTableTotal").style.opacity = "0.5"
@@ -321,7 +318,7 @@ var main = new Vue({
                     },
                     body: JSON.stringify(ships)
                 })
-                .then(response => console.log(response))
+//                .then(response => console.log(response))
                 .then(r => {
                     this.placing = false;
                     this.getDataObject(this.determineGamePlayer())
@@ -341,7 +338,8 @@ var main = new Vue({
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(salvo)
-                    }).then(response => console.log(response))
+                    })
+//                    .then(response => console.log(response))
                     .then(this.salvo = [])
                     .then(r => {
                         this.getDataObject(main.determineGamePlayer())
@@ -359,7 +357,7 @@ var main = new Vue({
                             this.salvo.push(shotCell);
                             this.allShots.push(shotCell)
                         } else {
-                            alert("5 shots fired!")
+                            alert("maximum of 5 shots per salvo!")
                         }
                     } else {
                         this.salvo = this.salvo.filter(e => e !== shotCell);

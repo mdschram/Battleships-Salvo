@@ -38,8 +38,6 @@ var main = new Vue({
         },
         onConversionToJsonSuccessful: function (json) {
             main.gameData = json;
-            console.log(this.gameData)
-
             if (this.gameData.player != "no player logged in") {
                 this.userLoggedIn = true
             } else {
@@ -102,7 +100,7 @@ var main = new Vue({
                     }
                 })
                 .catch(function (res) {
-                    console.log(res)
+                 
                 })
         },
         logout: function () {
@@ -135,7 +133,7 @@ var main = new Vue({
                 })
 
                 .catch(function (res) {
-                    console.log(res)
+//                    console.log(res)
                 })
         },
         createGame: function () {
@@ -150,15 +148,15 @@ var main = new Vue({
                     })).then(res => {
                         if (res.status == 201) {
                             res => res.json();
-                            console.log(res);
+//                            console.log(res);
                          window.location.href = "/web/game.html?gp=" + res.data.gpid
                         } else {
                             alert("error")
                         }
-                        console.log(res.status, res.data)
+//                        console.log(res.status, res.data)
                     }))
                 .catch(function (res) {
-                    console.log(res)
+//                    console.log(res)
                 })
         },
         joinGame: function (game) {
@@ -177,10 +175,10 @@ var main = new Vue({
                         } else {
                             alert("error")
                         }
-                        console.log(res.status, res.data)
+//                        console.log(res.status, res.data)
                     }))
                 .catch(function (res) {
-                    console.log(res)
+//                    console.log(res)
                 })
         },
         goToGamePage: function (link) {
